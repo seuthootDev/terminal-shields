@@ -7,34 +7,34 @@ Same URL idea as [Shields](https://shields.io). Different look: monospace, glow,
 **Live:** [terminal-shields.vercel.app](https://terminal-shields.vercel.app) · includes a badge generator
 
 [![build](https://terminal-shields.vercel.app/badge/build-passing-brightgreen)](https://terminal-shields.vercel.app)
-[![stars](https://terminal-shields.vercel.app/github/stars/seuthootDev/terminal-shields)](https://github.com/seuthootDev/terminal-shields)
+[![stars](https://terminal-shields.vercel.app/github/stars/seuthootDev/terminal-shields?blink=1)](https://github.com/seuthootDev/terminal-shields)
 [![license](https://terminal-shields.vercel.app/github/license/seuthootDev/terminal-shields)](https://github.com/seuthootDev/terminal-shields)
-[![npm](https://terminal-shields.vercel.app/npm/v/express)](https://terminal-shields.vercel.app)
+[![npm](https://terminal-shields.vercel.app/npm/v/express?blink=1)](https://terminal-shields.vercel.app)
 
 ## Examples
 
 - code coverage: ![coverage](https://terminal-shields.vercel.app/badge/coverage-80%25-yellowgreen?theme=cyan)
-- stable release: ![version](https://terminal-shields.vercel.app/badge/version-1.2.3-blue)
-- package manager release: ![gem](https://terminal-shields.vercel.app/badge/gem-2.2.0-blue)
-- dependencies: ![dependencies](https://terminal-shields.vercel.app/badge/dependencies-out_of_date-orange)
+- stable release: ![version](https://terminal-shields.vercel.app/badge/version-1.2.3-blue?blink=1)
+- package manager release: ![gem](https://terminal-shields.vercel.app/badge/gem-2.2.0-blue?blink=1)
+- dependencies: ![dependencies](https://terminal-shields.vercel.app/badge/dependencies-out_of_date-orange?blink=1)
 - static analysis grade: ![codacy](https://terminal-shields.vercel.app/badge/codacy-B-green)
-- SemVer: ![semver](https://terminal-shields.vercel.app/badge/semver-2.0.0-blue)
-- donations: ![receives](https://terminal-shields.vercel.app/badge/receives-2.00_USD%2Fweek-yellow)
+- SemVer: ![semver](https://terminal-shields.vercel.app/badge/semver-2.0.0-blue?blink=1)
+- donations: ![receives](https://terminal-shields.vercel.app/badge/receives-2.00_USD%2Fweek-yellow?blink=1)
 - downloads: ![downloads](https://terminal-shields.vercel.app/badge/downloads-13k%2Fmonth-brightgreen)
 - rating: ![rating](https://terminal-shields.vercel.app/badge/rating-4%2F5-brightgreen)
 - uptime: ![uptime](https://terminal-shields.vercel.app/badge/uptime-100%25-brightgreen?theme=cyan)
 - build status: ![build](https://terminal-shields.vercel.app/badge/build-passing-brightgreen)
 - failing build: ![failing](https://terminal-shields.vercel.app/badge/build-failing-red)
 - node engine: ![node](https://terminal-shields.vercel.app/badge/node-%3E%3D18-brightgreen)
-- python: ![python](https://terminal-shields.vercel.app/badge/python-3.12-blue)
-- custom hex color: ![made with](https://terminal-shields.vercel.app/badge/made_with-terminal--shields-8A2BE2)
+- python: ![python](https://terminal-shields.vercel.app/badge/python-3.12-blue?blink=1)
+- custom hex color: ![made with](https://terminal-shields.vercel.app/badge/made_with-terminal--shields-8A2BE2?blink=1)
 
 Live GitHub / npm:
 
-- repo stars: ![gh stars](https://terminal-shields.vercel.app/github/stars/badges/shields)
+- repo stars: ![gh stars](https://terminal-shields.vercel.app/github/stars/badges/shields?blink=1)
 - repo license: ![gh license](https://terminal-shields.vercel.app/github/license/badges/shields)
-- npm package: ![npm](https://terminal-shields.vercel.app/npm/v/express)
-- scoped npm: ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
+- npm package: ![npm](https://terminal-shields.vercel.app/npm/v/express?blink=1)
+- scoped npm: ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core?blink=1)
 
 ## Themes
 
@@ -44,7 +44,7 @@ Live GitHub / npm:
 | `green` | `>_ build [PASSING]` |
 | `cyan` | `coverage [██████░░] 75%` |
 
-![amber](https://terminal-shields.vercel.app/badge/stars-128-yellow?theme=amber)
+![amber](https://terminal-shields.vercel.app/badge/stars-128-yellow?theme=amber&blink=1)
 ![green](https://terminal-shields.vercel.app/badge/build-passing-brightgreen?theme=green)
 ![cyan](https://terminal-shields.vercel.app/badge/coverage-75%25-blue?theme=cyan)
 
@@ -63,8 +63,8 @@ Terminal window presets (independent of layout theme):
 
 Also accepts hex: `?bg=1a1a2e`
 
-![ubuntu](https://terminal-shields.vercel.app/badge/shell-ubuntu-yellow?theme=amber&bg=ubuntu)
-![powershell](https://terminal-shields.vercel.app/badge/shell-powershell-blue?theme=amber&bg=powershell)
+![ubuntu](https://terminal-shields.vercel.app/badge/shell-ubuntu-yellow?theme=amber&bg=ubuntu&blink=1)
+![powershell](https://terminal-shields.vercel.app/badge/shell-powershell-blue?theme=amber&bg=powershell&blink=1)
 ![matrix](https://terminal-shields.vercel.app/badge/shell-matrix-brightgreen?theme=green&bg=matrix)
 
 ### Cursor blink (amber `█` only)
@@ -93,6 +93,7 @@ https://terminal-shields.vercel.app/static/v1?label=LABEL&message=MESSAGE&color=
 ```markdown
 ![build](https://terminal-shields.vercel.app/badge/build-passing-brightgreen)
 ![coverage](https://terminal-shields.vercel.app/badge/coverage-80%25-yellowgreen?theme=cyan)
+![stars](https://terminal-shields.vercel.app/badge/stars-128-yellow?theme=amber&blink=1)
 ![license](https://terminal-shields.vercel.app/static/v1?label=license&message=MIT&color=green&theme=green)
 ```
 
@@ -109,10 +110,10 @@ https://terminal-shields.vercel.app/npm/v/:package/:tag
 ```
 
 ```markdown
-![stars](https://terminal-shields.vercel.app/github/stars/USER/REPO)
+![stars](https://terminal-shields.vercel.app/github/stars/USER/REPO?blink=1)
 ![license](https://terminal-shields.vercel.app/github/license/USER/REPO)
-![npm](https://terminal-shields.vercel.app/npm/v/express)
-![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
+![npm](https://terminal-shields.vercel.app/npm/v/express?blink=1)
+![babel](https://terminal-shields.vercel.app/npm/v/@babel/core?blink=1)
 ```
 
 Optional: set `GITHUB_TOKEN` on Vercel for higher GitHub API limits.
