@@ -3,6 +3,7 @@ import express from "express";
 import { inferTheme, toSvgColor } from "./colors.js";
 import { formatMetric } from "./format.js";
 import { fetchGithubLicense, fetchGithubStars } from "./github.js";
+import { homePageHtml } from "./homePage.js";
 import { fetchNpmVersion } from "./npm.js";
 import { parseBadgePath } from "./parse.js";
 import { renderBadge } from "./render.js";
@@ -97,9 +98,6 @@ app.get("/github/license/:user/:repo", async (req, res) => {
   await sendServiceBadge(req, res, () => fetchGithubLicense(user, repo));
 });
 
-// Unscoped: /npm/v/express
-// Scoped:   /npm/v/@scope/name
-// Optional tag: ?tag=next  or  /npm/v/express/next  (unscoped only)
 app.get("/npm/v/@:scope/:pkg", async (req, res) => {
   const tag = String(req.query.tag ?? "latest").trim() || "latest";
   const pkg = `@${req.params.scope}/${req.params.pkg}`;
@@ -130,31 +128,7 @@ app.get("/", (req, res) => {
     return;
   }
 
-  res
-    .type("html")
-    .send(`<!doctype html>
-<meta charset="utf-8">
-<title>terminal-shields</title>
-<body style="background:#0d1117;color:#c9d1d9;font-family:sans-serif;padding:32px">
-  <h1>terminal-shields</h1>
-  <p>Shields-style URLs, terminal one-liners.</p>
-  <p>
-    <img alt="stars" src="/badge/stars-128-yellow">
-    <img alt="build" src="/badge/build-passing-brightgreen">
-    <img alt="coverage" src="/badge/coverage-75%25-blue">
-  </p>
-  <p>
-    <img alt="gh stars" src="/github/stars/badges/shields">
-    <img alt="gh license" src="/github/license/badges/shields">
-    <img alt="npm" src="/npm/v/express">
-  </p>
-  <pre>/badge/stars-128-yellow
-/github/stars/badges/shields
-/github/license/badges/shields
-/npm/v/express
-/npm/v/@babel/core
-/static/v1?label=license&message=MIT&color=green&theme=green</pre>
-</body>`);
+  res.type("html").send(homePageHtml());
 });
 
 if (!process.env.VERCEL) {
