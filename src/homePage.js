@@ -201,20 +201,21 @@ export function homePageHtml() {
         </label>
         <label id="field-color">
           color
-          <select id="color">
-            <option>brightgreen</option>
-            <option>green</option>
-            <option>yellow</option>
-            <option>yellowgreen</option>
-            <option>orange</option>
-            <option>red</option>
-            <option>blue</option>
-            <option>grey</option>
-            <option>lightgrey</option>
-            <option>success</option>
-            <option>important</option>
-            <option>critical</option>
-          </select>
+          <input id="color" list="color-list" value="brightgreen" autocomplete="off" placeholder="brightgreen or 8A2BE2">
+          <datalist id="color-list">
+            <option value="brightgreen"></option>
+            <option value="green"></option>
+            <option value="yellow"></option>
+            <option value="yellowgreen"></option>
+            <option value="orange"></option>
+            <option value="red"></option>
+            <option value="blue"></option>
+            <option value="grey"></option>
+            <option value="lightgrey"></option>
+            <option value="success"></option>
+            <option value="important"></option>
+            <option value="critical"></option>
+          </datalist>
         </label>
 
         <label id="field-user" class="hidden">
@@ -324,23 +325,28 @@ export function homePageHtml() {
       const t = els.type.value;
       show("field-label", t === "static");
       show("field-message", t === "static");
-      show("field-color", t === "static");
       show("field-user", t.startsWith("github"));
       show("field-repo", t.startsWith("github"));
       show("field-pkg", t === "npm");
       show("field-tag", t === "npm");
       els.hint.textContent = {
-        static: "Path form: /badge/LABEL-MESSAGE-COLOR",
-        "github-stars": "Enter owner + repo (e.g. seuthootDev / terminal-shields). Live star count from GitHub.",
-        "github-license": "Enter owner + repo. SPDX license from the GitHub API.",
-        npm: "Latest (or tagged) version from the npm registry",
+        static: "Path form: /badge/LABEL-MESSAGE-COLOR — color: named (brightgreen) or hex (8A2BE2)",
+        "github-stars": "Enter owner + repo. Optional color overrides default yellow.",
+        "github-license": "Enter owner + repo. Optional color overrides default green.",
+        npm: "Package name (+ optional tag). Optional color overrides default blue.",
       }[t];
+    }
+
+    function normalizeColor(raw) {
+      return String(raw ?? "").trim().replace(/^#/, "");
     }
 
     function querySuffix(extra = {}) {
       const params = new URLSearchParams();
       if (els.theme.value) params.set("theme", els.theme.value);
       if (els.blink.checked) params.set("blink", "1");
+      const color = normalizeColor(els.color.value);
+      if (els.type.value !== "static" && color) params.set("color", color);
       for (const [key, value] of Object.entries(extra)) {
         if (value != null && value !== "") params.set(key, value);
       }
@@ -354,7 +360,7 @@ export function homePageHtml() {
       if (t === "static") {
         const label = encodeSegment(els.label.value.trim());
         const message = encodeSegment(els.message.value.trim() || "message");
-        const color = els.color.value.trim() || "brightgreen";
+        const color = normalizeColor(els.color.value) || "brightgreen";
         const body = label ? label + "-" + message + "-" + color : message + "-" + color;
         return "/badge/" + body + querySuffix();
       }
