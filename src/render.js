@@ -1,4 +1,5 @@
-import { THEMES } from "./themes.js";
+import { resolveBackground, THEMES } from "./themes.js";
+import { toSvgColor } from "./colors.js";
 
 function escapeXml(text) {
   return String(text)
@@ -83,12 +84,13 @@ function neonFilterDef(id) {
     </filter>`;
 }
 
-export function renderBadge({ label = "", message, theme = "amber", fg, blink = false }) {
+export function renderBadge({ label = "", message, theme = "amber", fg, bg, blink = false }) {
   const palette = THEMES[theme] ?? THEMES.amber;
   const text = buildDisplayText({ label, message, theme: palette.name });
   const { main, cursor } = splitCursor(text);
   const width = Math.max(40, Math.ceil(PAD_X * 2 + text.length * CHAR_W));
   const fill = fg ?? palette.fg;
+  const background = resolveBackground(bg) ?? toSvgColor(bg) ?? palette.bg;
   const filterId = `neon-${palette.name}`;
   const border = fill;
 
@@ -98,7 +100,7 @@ export function renderBadge({ label = "", message, theme = "amber", fg, blink = 
   <defs>
     ${neonFilterDef(filterId)}
   </defs>
-  <rect width="${width}" height="${HEIGHT}" rx="4" fill="${palette.bg}"/>
+  <rect width="${width}" height="${HEIGHT}" rx="4" fill="${background}"/>
   <rect width="${width}" height="${HEIGHT}" rx="4" fill="none" stroke="${border}" stroke-opacity="0.16" stroke-width="0.5"/>
   ${renderText({ x: PAD_X, y: TEXT_Y, fill, filterId, main, cursor, blink: blink && Boolean(cursor) })}
 </svg>`;

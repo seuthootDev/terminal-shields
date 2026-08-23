@@ -48,6 +48,25 @@ Live GitHub / npm:
 ![green](https://terminal-shields.vercel.app/badge/build-passing-brightgreen?theme=green)
 ![cyan](https://terminal-shields.vercel.app/badge/coverage-75%25-blue?theme=cyan)
 
+### Background (`?bg=`)
+
+Terminal window presets (independent of layout theme):
+
+| bg | look |
+|----|------|
+| `ubuntu` | classic aubergine |
+| `powershell` | blue console |
+| `macos` | dark graphite |
+| `cmd` | near-black |
+| `matrix` | deep black-green |
+| `gnome` / `dracula` / `solarized` / `nord` | popular terminal palettes |
+
+Also accepts hex: `?bg=1a1a2e`
+
+![ubuntu](https://terminal-shields.vercel.app/badge/shell-ubuntu-yellow?theme=amber&bg=ubuntu)
+![powershell](https://terminal-shields.vercel.app/badge/shell-powershell-blue?theme=amber&bg=powershell)
+![matrix](https://terminal-shields.vercel.app/badge/shell-matrix-brightgreen?theme=green&bg=matrix)
+
 ### Cursor blink (amber `█` only)
 
 Add `?blink=1` for a SMIL opacity toggle on the block cursor. Works in GitHub README `<img>` tags (no JS).

@@ -21,12 +21,18 @@ function parseBlink(query) {
   return value === "1" || value === "true" || value === "on";
 }
 
-function sendBadge(res, { label, message, color, theme, blink = false, maxAge = 3600 }) {
+function pickBg(req) {
+  const raw = String(req.query.bg ?? "").trim();
+  return raw || undefined;
+}
+
+function sendBadge(res, { label, message, color, theme, bg, blink = false, maxAge = 3600 }) {
   const svg = renderBadge({
     label,
     message,
     theme,
     fg: toSvgColor(color) ?? undefined,
+    bg,
     blink
   });
   res.set("Cache-Control", `public, max-age=${maxAge}`);
@@ -53,6 +59,7 @@ async function sendServiceBadge(req, res, loader) {
       message: data.message,
       color,
       theme: pickTheme(req, color),
+      bg: pickBg(req),
       blink: parseBlink(req.query),
       maxAge: 1800
     });
@@ -74,6 +81,7 @@ app.get(["/static/v1", "/static"], (req, res) => {
     message,
     color,
     theme: pickTheme(req, color),
+    bg: pickBg(req),
     blink: parseBlink(req.query)
   });
 });
@@ -87,6 +95,7 @@ app.get(/^\/badge\/(.+)$/, (req, res) => {
       message: parsed.message,
       color,
       theme: pickTheme(req, color),
+      bg: pickBg(req),
       blink: parseBlink(req.query)
     });
   } catch (error) {
@@ -133,6 +142,7 @@ app.get("/", (req, res) => {
       message,
       color,
       theme: pickTheme(req, color),
+      bg: pickBg(req),
       blink: parseBlink(req.query)
     });
     return;

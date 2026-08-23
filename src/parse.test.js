@@ -75,3 +75,21 @@ test("renders SMIL blink when requested", () => {
   assert.match(svg, /<animate attributeName="opacity"/);
   assert.match(svg, /<tspan>/);
 });
+
+test("applies terminal background presets", () => {
+  const ubuntu = renderBadge({
+    label: "shell",
+    message: "ubuntu",
+    theme: "amber",
+    bg: "ubuntu"
+  });
+  assert.match(ubuntu, /fill="#300A24"/);
+
+  const hex = renderBadge({
+    label: "shell",
+    message: "custom",
+    theme: "amber",
+    bg: "1a1a2e"
+  });
+  assert.match(hex, /fill="#1a1a2e"/);
+});

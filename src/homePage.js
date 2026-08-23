@@ -89,6 +89,14 @@ export function homePageHtml() {
       font: inherit;
       font-size: 0.9rem;
     }
+    select {
+      appearance: auto;
+      cursor: pointer;
+    }
+    select option {
+      background: #0a100a;
+      color: var(--text);
+    }
     input:focus, select:focus {
       outline: 1px solid var(--green);
       border-color: var(--green);
@@ -182,12 +190,27 @@ export function homePageHtml() {
           </select>
         </label>
         <label>
-          theme
+          theme (layout)
           <select id="theme">
             <option value="">auto</option>
             <option value="amber">amber ($ prompt)</option>
             <option value="green">green (&gt;_ status)</option>
             <option value="cyan">cyan (meter)</option>
+          </select>
+        </label>
+        <label>
+          background
+          <select id="bg">
+            <option value="">theme default</option>
+            <option value="ubuntu">ubuntu</option>
+            <option value="powershell">powershell</option>
+            <option value="macos">macos</option>
+            <option value="cmd">cmd</option>
+            <option value="matrix">matrix</option>
+            <option value="gnome">gnome</option>
+            <option value="dracula">dracula</option>
+            <option value="solarized">solarized</option>
+            <option value="nord">nord</option>
           </select>
         </label>
 
@@ -201,21 +224,24 @@ export function homePageHtml() {
         </label>
         <label id="field-color">
           color
-          <input id="color" list="color-list" value="brightgreen" autocomplete="off" placeholder="brightgreen or 8A2BE2">
-          <datalist id="color-list">
-            <option value="brightgreen"></option>
-            <option value="green"></option>
-            <option value="yellow"></option>
-            <option value="yellowgreen"></option>
-            <option value="orange"></option>
-            <option value="red"></option>
-            <option value="blue"></option>
-            <option value="grey"></option>
-            <option value="lightgrey"></option>
-            <option value="success"></option>
-            <option value="important"></option>
-            <option value="critical"></option>
-          </datalist>
+          <select id="colorNamed">
+            <option value="brightgreen">brightgreen</option>
+            <option value="green">green</option>
+            <option value="yellow">yellow</option>
+            <option value="yellowgreen">yellowgreen</option>
+            <option value="orange">orange</option>
+            <option value="red">red</option>
+            <option value="blue">blue</option>
+            <option value="grey">grey</option>
+            <option value="lightgrey">lightgrey</option>
+            <option value="success">success</option>
+            <option value="important">important</option>
+            <option value="critical">critical</option>
+          </select>
+        </label>
+        <label id="field-color-hex">
+          custom hex (optional)
+          <input id="colorHex" value="" autocomplete="off" placeholder="8A2BE2 — overrides select">
         </label>
 
         <label id="field-user" class="hidden">
@@ -295,9 +321,11 @@ export function homePageHtml() {
     const els = {
       type: document.getElementById("type"),
       theme: document.getElementById("theme"),
+      bg: document.getElementById("bg"),
       label: document.getElementById("label"),
       message: document.getElementById("message"),
-      color: document.getElementById("color"),
+      colorNamed: document.getElementById("colorNamed"),
+      colorHex: document.getElementById("colorHex"),
       user: document.getElementById("user"),
       repo: document.getElementById("repo"),
       pkg: document.getElementById("pkg"),
@@ -330,10 +358,10 @@ export function homePageHtml() {
       show("field-pkg", t === "npm");
       show("field-tag", t === "npm");
       els.hint.textContent = {
-        static: "Path form: /badge/LABEL-MESSAGE-COLOR — color: named (brightgreen) or hex (8A2BE2)",
-        "github-stars": "Enter owner + repo. Optional color overrides default yellow.",
-        "github-license": "Enter owner + repo. Optional color overrides default green.",
-        npm: "Package name (+ optional tag). Optional color overrides default blue.",
+        static: "Pick a named color from the select, or type a custom hex. Background uses terminal presets.",
+        "github-stars": "Enter owner + repo. Color/background optional overrides.",
+        "github-license": "Enter owner + repo. Color/background optional overrides.",
+        npm: "Package name (+ optional tag). Color/background optional overrides.",
       }[t];
     }
 
@@ -341,11 +369,18 @@ export function homePageHtml() {
       return String(raw ?? "").trim().replace(/^#/, "");
     }
 
+    function pickedColor() {
+      const hex = normalizeColor(els.colorHex.value);
+      if (hex) return hex;
+      return els.colorNamed.value.trim() || "brightgreen";
+    }
+
     function querySuffix(extra = {}) {
       const params = new URLSearchParams();
       if (els.theme.value) params.set("theme", els.theme.value);
+      if (els.bg.value) params.set("bg", els.bg.value);
       if (els.blink.checked) params.set("blink", "1");
-      const color = normalizeColor(els.color.value);
+      const color = pickedColor();
       if (els.type.value !== "static" && color) params.set("color", color);
       for (const [key, value] of Object.entries(extra)) {
         if (value != null && value !== "") params.set(key, value);
@@ -360,7 +395,7 @@ export function homePageHtml() {
       if (t === "static") {
         const label = encodeSegment(els.label.value.trim());
         const message = encodeSegment(els.message.value.trim() || "message");
-        const color = normalizeColor(els.color.value) || "brightgreen";
+        const color = pickedColor();
         const body = label ? label + "-" + message + "-" + color : message + "-" + color;
         return "/badge/" + body + querySuffix();
       }
