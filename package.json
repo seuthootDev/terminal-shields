@@ -1,0 +1,18 @@
+{
+  "name": "terminal-shields",
+  "version": "0.1.0",
+  "description": "Terminal-style SVG badges with the same URL logic as Shields.io",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "serve": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
