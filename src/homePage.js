@@ -219,11 +219,11 @@ export function homePageHtml() {
 
         <label id="field-user" class="hidden">
           github user
-          <input id="user" value="badges" autocomplete="off">
+          <input id="user" value="seuthootDev" autocomplete="off" placeholder="owner username">
         </label>
         <label id="field-repo" class="hidden">
           github repo
-          <input id="repo" value="shields" autocomplete="off">
+          <input id="repo" value="terminal-shields" autocomplete="off" placeholder="repo name">
         </label>
         <label id="field-pkg" class="hidden full">
           npm package
@@ -310,7 +310,7 @@ export function homePageHtml() {
     };
 
     function show(id, on) {
-      document.getElementById(id).style.display = on ? "" : "none";
+      document.getElementById(id).classList.toggle("hidden", !on);
     }
 
     function encodeSegment(text) {
@@ -331,8 +331,8 @@ export function homePageHtml() {
       show("field-tag", t === "npm");
       els.hint.textContent = {
         static: "Path form: /badge/LABEL-MESSAGE-COLOR",
-        "github-stars": "Live stargazer count from the GitHub API",
-        "github-license": "SPDX license from the GitHub API",
+        "github-stars": "Enter owner + repo (e.g. seuthootDev / terminal-shields). Live star count from GitHub.",
+        "github-license": "Enter owner + repo. SPDX license from the GitHub API.",
         npm: "Latest (or tagged) version from the npm registry",
       }[t];
     }
