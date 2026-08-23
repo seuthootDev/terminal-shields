@@ -307,11 +307,11 @@ export function homePageHtml() {
     const samples = [
       ["/badge/build-passing-brightgreen", "build"],
       ["/badge/coverage-80%25-yellowgreen?theme=cyan", "coverage"],
-      ["/badge/qml-41CD52?logo=qt&theme=amber&blink=1", "qt"],
-      ["/badge/react-18-blue?logo=react&theme=amber&blink=1", "react"],
-      ["/badge/typescript-5-blue?logo=typescript&blink=1", "ts"],
-      ["/github/stars/seuthootDev/terminal-shields?logo=github&blink=1", "stars"],
-      ["/npm/v/express?blink=1", "npm"],
+      ["/badge/qml-41CD52?logo=qt&theme=amber", "qt"],
+      ["/badge/react-18-blue?logo=react&theme=amber", "react"],
+      ["/badge/typescript-5-blue?logo=typescript", "ts"],
+      ["/github/stars/seuthootDev/terminal-shields?logo=github", "stars"],
+      ["/npm/v/express", "npm"],
     ];
 
     const samplesEl = document.getElementById("samples");
