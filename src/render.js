@@ -15,6 +15,9 @@ const CHAR_W = FONT_SIZE * 0.62;
 const HEIGHT = 28;
 const PAD_X = 8;
 const TEXT_Y = 18;
+const LOGO_SIZE = 13;
+const LOGO_GAP = 5;
+const LOGO_VIEW = 24;
 
 function meterBar(percent) {
   const clamped = Math.max(0, Math.min(100, percent));
@@ -84,15 +87,39 @@ function neonFilterDef(id) {
     </filter>`;
 }
 
-export function renderBadge({ label = "", message, theme = "amber", fg, bg, blink = false }) {
+function renderLogo({ path, x, y, size, fill, filterId }) {
+  const scale = size / LOGO_VIEW;
+  return `<g transform="translate(${x}, ${y})" filter="url(#${filterId})">
+    <g transform="scale(${scale})">
+      <path d="${path}" fill="${fill}"/>
+    </g>
+  </g>`;
+}
+
+export function renderBadge({
+  label = "",
+  message,
+  theme = "amber",
+  fg,
+  bg,
+  blink = false,
+  logoPath = null
+}) {
   const palette = THEMES[theme] ?? THEMES.amber;
   const text = buildDisplayText({ label, message, theme: palette.name });
   const { main, cursor } = splitCursor(text);
-  const width = Math.max(40, Math.ceil(PAD_X * 2 + text.length * CHAR_W));
+  const hasLogo = Boolean(logoPath);
+  const logoOffset = hasLogo ? LOGO_SIZE + LOGO_GAP : 0;
+  const width = Math.max(
+    40,
+    Math.ceil(PAD_X * 2 + logoOffset + text.length * CHAR_W)
+  );
   const fill = fg ?? palette.fg;
   const background = resolveBackground(bg) ?? toSvgColor(bg) ?? palette.bg;
   const filterId = `neon-${palette.name}`;
   const border = fill;
+  const textX = PAD_X + logoOffset;
+  const logoY = (HEIGHT - LOGO_SIZE) / 2;
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${HEIGHT}" viewBox="0 0 ${width} ${HEIGHT}" role="img" aria-label="${escapeXml(text)}">
@@ -102,6 +129,7 @@ export function renderBadge({ label = "", message, theme = "amber", fg, bg, blin
   </defs>
   <rect width="${width}" height="${HEIGHT}" rx="4" fill="${background}"/>
   <rect width="${width}" height="${HEIGHT}" rx="4" fill="none" stroke="${border}" stroke-opacity="0.16" stroke-width="0.5"/>
-  ${renderText({ x: PAD_X, y: TEXT_Y, fill, filterId, main, cursor, blink: blink && Boolean(cursor) })}
+  ${hasLogo ? renderLogo({ path: logoPath, x: PAD_X, y: logoY, size: LOGO_SIZE, fill, filterId }) : ""}
+  ${renderText({ x: textX, y: TEXT_Y, fill, filterId, main, cursor, blink: blink && Boolean(cursor) })}
 </svg>`;
 }

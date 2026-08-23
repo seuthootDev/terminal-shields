@@ -260,6 +260,10 @@ export function homePageHtml() {
           npm tag
           <input id="tag" value="latest" autocomplete="off">
         </label>
+        <label id="field-logo" class="full">
+          logo (Simple Icons slug)
+          <input id="logo" value="" autocomplete="off" placeholder="qt, react, typescript, github — monochrome">
+        </label>
         <label id="field-blink" class="full blink-row">
           <span>cursor blink</span>
           <span class="check-wrap">
@@ -303,11 +307,11 @@ export function homePageHtml() {
     const samples = [
       ["/badge/build-passing-brightgreen", "build"],
       ["/badge/coverage-80%25-yellowgreen?theme=cyan", "coverage"],
-      ["/badge/version-1.2.3-blue", "version"],
-      ["/badge/dependencies-out_of_date-orange", "deps"],
-      ["/github/stars/badges/shields", "stars"],
-      ["/github/license/badges/shields", "license"],
-      ["/npm/v/express", "npm"],
+      ["/badge/qml-41CD52?logo=qt&theme=amber&blink=1", "qt"],
+      ["/badge/react-18-blue?logo=react&theme=amber&blink=1", "react"],
+      ["/badge/typescript-5-blue?logo=typescript&blink=1", "ts"],
+      ["/github/stars/seuthootDev/terminal-shields?logo=github&blink=1", "stars"],
+      ["/npm/v/express?blink=1", "npm"],
     ];
 
     const samplesEl = document.getElementById("samples");
@@ -330,6 +334,7 @@ export function homePageHtml() {
       repo: document.getElementById("repo"),
       pkg: document.getElementById("pkg"),
       tag: document.getElementById("tag"),
+      logo: document.getElementById("logo"),
       blink: document.getElementById("blink"),
       preview: document.getElementById("preview"),
       url: document.getElementById("url"),
@@ -379,6 +384,7 @@ export function homePageHtml() {
       const params = new URLSearchParams();
       if (els.theme.value) params.set("theme", els.theme.value);
       if (els.bg.value) params.set("bg", els.bg.value);
+      if (els.logo.value.trim()) params.set("logo", els.logo.value.trim());
       if (els.blink.checked) params.set("blink", "1");
       const color = pickedColor();
       if (els.type.value !== "static" && color) params.set("color", color);

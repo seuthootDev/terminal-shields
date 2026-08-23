@@ -93,3 +93,16 @@ test("applies terminal background presets", () => {
   });
   assert.match(hex, /fill="#1a1a2e"/);
 });
+
+test("renders monochrome logo path matching text color", () => {
+  const path = "M12 0L24 24H0z";
+  const svg = renderBadge({
+    label: "qml",
+    message: "ok",
+    theme: "amber",
+    fg: "#ffbe30",
+    logoPath: path
+  });
+  assert.match(svg, new RegExp(`<path d="${path}" fill="#ffbe30"/>`));
+  assert.match(svg, /transform="scale\(/);
+});

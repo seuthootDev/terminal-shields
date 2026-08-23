@@ -4,6 +4,7 @@ import { inferTheme, toSvgColor } from "./colors.js";
 import { formatMetric } from "./format.js";
 import { fetchGithubLicense, fetchGithubStars } from "./github.js";
 import { homePageHtml } from "./homePage.js";
+import { fetchLogoPath } from "./logo.js";
 import { fetchNpmVersion } from "./npm.js";
 import { parseBadgePath } from "./parse.js";
 import { renderBadge } from "./render.js";
@@ -26,14 +27,29 @@ function pickBg(req) {
   return raw || undefined;
 }
 
-function sendBadge(res, { label, message, color, theme, bg, blink = false, maxAge = 3600 }) {
+function pickLogo(req) {
+  const raw = String(req.query.logo ?? "").trim();
+  return raw || undefined;
+}
+
+async function sendBadge(res, { label, message, color, theme, bg, logo, blink = false, maxAge = 3600 }) {
+  let logoPath = null;
+  if (logo) {
+    try {
+      logoPath = await fetchLogoPath(logo);
+    } catch {
+      logoPath = null;
+    }
+  }
+
   const svg = renderBadge({
     label,
     message,
     theme,
     fg: toSvgColor(color) ?? undefined,
     bg,
-    blink
+    blink,
+    logoPath
   });
   res.set("Cache-Control", `public, max-age=${maxAge}`);
   res.type("image/svg+xml").send(svg);
@@ -54,12 +70,13 @@ async function sendServiceBadge(req, res, loader) {
   try {
     const data = await loader();
     const color = String(req.query.color ?? data.color);
-    sendBadge(res, {
+    await sendBadge(res, {
       label: data.label,
       message: data.message,
       color,
       theme: pickTheme(req, color),
       bg: pickBg(req),
+      logo: pickLogo(req),
       blink: parseBlink(req.query),
       maxAge: 1800
     });
@@ -68,7 +85,7 @@ async function sendServiceBadge(req, res, loader) {
   }
 }
 
-app.get(["/static/v1", "/static"], (req, res) => {
+app.get(["/static/v1", "/static"], async (req, res) => {
   const message = String(req.query.message ?? "").trim();
   if (!message) {
     sendError(res, "message required");
@@ -76,26 +93,28 @@ app.get(["/static/v1", "/static"], (req, res) => {
   }
   const label = String(req.query.label ?? "").trim();
   const color = String(req.query.color ?? "brightgreen");
-  sendBadge(res, {
+  await sendBadge(res, {
     label,
     message,
     color,
     theme: pickTheme(req, color),
     bg: pickBg(req),
+    logo: pickLogo(req),
     blink: parseBlink(req.query)
   });
 });
 
-app.get(/^\/badge\/(.+)$/, (req, res) => {
+app.get(/^\/badge\/(.+)$/, async (req, res) => {
   try {
     const parsed = parseBadgePath(req.params[0]);
     const color = String(req.query.color ?? parsed.color);
-    sendBadge(res, {
+    await sendBadge(res, {
       label: parsed.label,
       message: parsed.message,
       color,
       theme: pickTheme(req, color),
       bg: pickBg(req),
+      logo: pickLogo(req),
       blink: parseBlink(req.query)
     });
   } catch (error) {
@@ -128,7 +147,7 @@ app.get("/npm/v/:pkg/:tag?", async (req, res) => {
   await sendServiceBadge(req, res, () => fetchNpmVersion(pkg, tag));
 });
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   if (req.query.label || req.query.message) {
     const message = String(req.query.message ?? "").trim();
     if (!message) {
@@ -137,12 +156,13 @@ app.get("/", (req, res) => {
     }
     const label = String(req.query.label ?? "").trim();
     const color = String(req.query.color ?? "brightgreen");
-    sendBadge(res, {
+    await sendBadge(res, {
       label,
       message,
       color,
       theme: pickTheme(req, color),
       bg: pickBg(req),
+      logo: pickLogo(req),
       blink: parseBlink(req.query)
     });
     return;

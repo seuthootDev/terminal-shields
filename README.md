@@ -8,7 +8,7 @@ Same URL idea as [Shields](https://shields.io). Different look: monospace, glow,
 
 [![build](https://terminal-shields.vercel.app/badge/build-passing-brightgreen)](https://terminal-shields.vercel.app)
 [![stars](https://terminal-shields.vercel.app/github/stars/seuthootDev/terminal-shields?blink=1)](https://github.com/seuthootDev/terminal-shields)
-[![license](https://terminal-shields.vercel.app/github/license/seuthootDev/terminal-shields)](https://github.com/seuthootDev/terminal-shields)
+[![license](https://terminal-shields.vercel.app/badge/license-MIT-green?logo=opensourceinitiative&theme=green)](./LICENSE)
 [![npm](https://terminal-shields.vercel.app/npm/v/express?blink=1)](https://terminal-shields.vercel.app)
 
 ## Examples
@@ -66,6 +66,24 @@ Also accepts hex: `?bg=1a1a2e`
 ![ubuntu](https://terminal-shields.vercel.app/badge/shell-ubuntu-yellow?theme=amber&bg=ubuntu&blink=1)
 ![powershell](https://terminal-shields.vercel.app/badge/shell-powershell-blue?theme=amber&bg=powershell&blink=1)
 ![matrix](https://terminal-shields.vercel.app/badge/shell-matrix-brightgreen?theme=green&bg=matrix)
+
+### Logos (`?logo=`) — Simple Icons, monochrome
+
+Icons from [Simple Icons](https://simpleicons.org) are painted the **same color as the text** (terminal look). Use the icon slug (`qt`, `react`, `typescript`, …).
+
+![qt](https://terminal-shields.vercel.app/badge/qml-41CD52?logo=qt&theme=amber&blink=1)
+![react](https://terminal-shields.vercel.app/badge/react-18-blue?logo=react&theme=amber&blink=1)
+![typescript](https://terminal-shields.vercel.app/badge/typescript-5-blue?logo=typescript&theme=amber&blink=1)
+![github](https://terminal-shields.vercel.app/github/stars/seuthootDev/terminal-shields?logo=github&theme=amber&blink=1)
+![node](https://terminal-shields.vercel.app/badge/node-%3E%3D18-brightgreen?logo=nodedotjs&theme=green)
+![python](https://terminal-shields.vercel.app/badge/python-3.12-blue?logo=python&theme=amber&blink=1)
+
+```
+https://terminal-shields.vercel.app/badge/qml-41CD52?logo=qt&theme=amber&blink=1
+https://terminal-shields.vercel.app/badge/react-18-blue?logo=react
+```
+
+Brand marks belong to their owners. See the [Simple Icons disclaimer](https://github.com/simple-icons/simple-icons/blob/develop/DISCLAIMER.md).
 
 ### Cursor blink (amber `█` only)
 
@@ -126,3 +144,7 @@ npm run serve
 ```
 
 Open `http://127.0.0.1:8000` — same generator UI as production.
+
+## License
+
+[MIT](./LICENSE) © seuthootDev
