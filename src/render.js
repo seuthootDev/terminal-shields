@@ -12,11 +12,11 @@ function escapeXml(text) {
 
 const FONT_SIZE = 11;
 const CHAR_W = FONT_SIZE * 0.62;
-const HEIGHT = 28;
-const PAD_X = 8;
-const TEXT_Y = 18;
-const LOGO_SIZE = 13;
-const LOGO_GAP = 5;
+const HEIGHT = 20;
+const PAD_X = 6;
+const TEXT_Y = 14;
+const LOGO_SIZE = 12;
+const LOGO_GAP = 4;
 const LOGO_VIEW = 24;
 
 function meterBar(percent) {
@@ -127,8 +127,8 @@ export function renderBadge({
   <defs>
     ${neonFilterDef(filterId)}
   </defs>
-  <rect width="${width}" height="${HEIGHT}" rx="4" fill="${background}"/>
-  <rect width="${width}" height="${HEIGHT}" rx="4" fill="none" stroke="${border}" stroke-opacity="0.16" stroke-width="0.5"/>
+  <rect width="${width}" height="${HEIGHT}" rx="3" fill="${background}"/>
+  <rect width="${width}" height="${HEIGHT}" rx="3" fill="none" stroke="${border}" stroke-opacity="0.16" stroke-width="0.5"/>
   ${hasLogo ? renderLogo({ path: logoPath, x: PAD_X, y: logoY, size: LOGO_SIZE, fill, filterId }) : ""}
   ${renderText({ x: textX, y: TEXT_Y, fill, filterId, main, cursor, blink: blink && Boolean(cursor) })}
 </svg>`;
