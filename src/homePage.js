@@ -140,6 +140,17 @@ export function homePageHtml() {
     }
     .hint { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
     .hidden { display: none; }
+    .blink-row .check-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+    .blink-row input[type="checkbox"] {
+      width: auto;
+      accent-color: var(--green);
+    }
     footer {
       margin-top: 28px;
       color: var(--muted);
@@ -222,6 +233,13 @@ export function homePageHtml() {
           npm tag
           <input id="tag" value="latest" autocomplete="off">
         </label>
+        <label id="field-blink" class="full blink-row">
+          <span>cursor blink</span>
+          <span class="check-wrap">
+            <input type="checkbox" id="blink">
+            amber <code>█</code> cursor — SMIL animation, works in GitHub README
+          </span>
+        </label>
       </div>
       <p class="hint" id="type-hint"></p>
     </section>
@@ -283,6 +301,7 @@ export function homePageHtml() {
       repo: document.getElementById("repo"),
       pkg: document.getElementById("pkg"),
       tag: document.getElementById("tag"),
+      blink: document.getElementById("blink"),
       preview: document.getElementById("preview"),
       url: document.getElementById("url"),
       markdown: document.getElementById("markdown"),
@@ -318,9 +337,18 @@ export function homePageHtml() {
       }[t];
     }
 
+    function querySuffix(extra = {}) {
+      const params = new URLSearchParams();
+      if (els.theme.value) params.set("theme", els.theme.value);
+      if (els.blink.checked) params.set("blink", "1");
+      for (const [key, value] of Object.entries(extra)) {
+        if (value != null && value !== "") params.set(key, value);
+      }
+      const s = params.toString();
+      return s ? "?" + s : "";
+    }
+
     function buildPath() {
-      const theme = els.theme.value;
-      const q = theme ? "?theme=" + encodeURIComponent(theme) : "";
       const t = els.type.value;
 
       if (t === "static") {
@@ -328,13 +356,13 @@ export function homePageHtml() {
         const message = encodeSegment(els.message.value.trim() || "message");
         const color = els.color.value.trim() || "brightgreen";
         const body = label ? label + "-" + message + "-" + color : message + "-" + color;
-        return "/badge/" + body + q;
+        return "/badge/" + body + querySuffix();
       }
       if (t === "github-stars") {
-        return "/github/stars/" + encodeURIComponent(els.user.value.trim()) + "/" + encodeURIComponent(els.repo.value.trim()) + q;
+        return "/github/stars/" + encodeURIComponent(els.user.value.trim()) + "/" + encodeURIComponent(els.repo.value.trim()) + querySuffix();
       }
       if (t === "github-license") {
-        return "/github/license/" + encodeURIComponent(els.user.value.trim()) + "/" + encodeURIComponent(els.repo.value.trim()) + q;
+        return "/github/license/" + encodeURIComponent(els.user.value.trim()) + "/" + encodeURIComponent(els.repo.value.trim()) + querySuffix();
       }
       const pkg = els.pkg.value.trim();
       const tag = els.tag.value.trim() || "latest";
@@ -344,15 +372,12 @@ export function homePageHtml() {
         path = slash === -1
           ? "/npm/v/" + encodeURIComponent(pkg)
           : "/npm/v/" + pkg.slice(0, slash) + "/" + encodeURIComponent(pkg.slice(slash + 1));
-        if (tag !== "latest") {
-          path += (q ? q + "&" : "?") + "tag=" + encodeURIComponent(tag);
-          return path;
-        }
-        return path + q;
+        if (tag !== "latest") return path + querySuffix({ tag });
+        return path + querySuffix();
       }
       path = "/npm/v/" + encodeURIComponent(pkg);
       if (tag !== "latest") path += "/" + encodeURIComponent(tag);
-      return path + q;
+      return path + querySuffix();
     }
 
     function refresh() {

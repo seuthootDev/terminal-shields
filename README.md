@@ -48,6 +48,16 @@ Live GitHub / npm:
 ![green](https://terminal-shields.vercel.app/badge/build-passing-brightgreen?theme=green)
 ![cyan](https://terminal-shields.vercel.app/badge/coverage-75%25-blue?theme=cyan)
 
+### Cursor blink (amber `█` only)
+
+Add `?blink=1` for a SMIL opacity toggle on the block cursor. Works in GitHub README `<img>` tags (no JS).
+
+![blink](https://terminal-shields.vercel.app/badge/build-passing-brightgreen?theme=amber&blink=1)
+
+```
+https://terminal-shields.vercel.app/badge/build-passing-brightgreen?theme=amber&blink=1
+```
+
 ## Static badge
 
 ```

@@ -50,23 +50,43 @@ export function buildDisplayText({ label, message, theme }) {
   return `$ ${message} █`;
 }
 
+const CURSOR_SUFFIX = " █";
+
+export function splitCursor(text) {
+  if (text.endsWith(CURSOR_SUFFIX)) {
+    return { main: text.slice(0, -CURSOR_SUFFIX.length), cursor: " █" };
+  }
+  return { main: text, cursor: null };
+}
+
+function cursorBlinkMarkup() {
+  return ` █<animate attributeName="opacity" values="1;0" dur="1.06s" repeatCount="indefinite" calcMode="discrete"/>`;
+}
+
+function renderText({ x, y, fill, filterId, main, cursor, blink }) {
+  const attrs = `x="${x}" y="${y}" font-family="Courier New, ui-monospace, monospace" font-size="${FONT_SIZE}" font-weight="bold" fill="${fill}" filter="url(#${filterId})"`;
+  if (cursor && blink) {
+    return `<text ${attrs}>${escapeXml(main)}<tspan>${cursorBlinkMarkup()}</tspan></text>`;
+  }
+  return `<text ${attrs}>${escapeXml(main + (cursor ?? ""))}</text>`;
+}
+
 function neonFilterDef(id) {
-  return `<filter id="${id}" x="-35%" y="-45%" width="170%" height="190%" color-interpolation-filters="sRGB">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="glow-tight"/>
-      <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" result="glow-mid"/>
-      <feGaussianBlur in="SourceGraphic" stdDeviation="3.2" result="glow-wide"/>
+  return `<filter id="${id}" x="-18%" y="-22%" width="136%" height="144%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.35" result="glow-soft"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.85" result="glow-mid"/>
       <feMerge>
-        <feMergeNode in="glow-wide"/>
         <feMergeNode in="glow-mid"/>
-        <feMergeNode in="glow-tight"/>
+        <feMergeNode in="glow-soft"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>`;
 }
 
-export function renderBadge({ label = "", message, theme = "amber", fg }) {
+export function renderBadge({ label = "", message, theme = "amber", fg, blink = false }) {
   const palette = THEMES[theme] ?? THEMES.amber;
   const text = buildDisplayText({ label, message, theme: palette.name });
+  const { main, cursor } = splitCursor(text);
   const width = Math.max(40, Math.ceil(PAD_X * 2 + text.length * CHAR_W));
   const fill = fg ?? palette.fg;
   const filterId = `neon-${palette.name}`;
@@ -79,7 +99,7 @@ export function renderBadge({ label = "", message, theme = "amber", fg }) {
     ${neonFilterDef(filterId)}
   </defs>
   <rect width="${width}" height="${HEIGHT}" rx="4" fill="${palette.bg}"/>
-  <rect width="${width}" height="${HEIGHT}" rx="4" fill="none" stroke="${border}" stroke-opacity="0.28" stroke-width="0.75"/>
-  <text x="${PAD_X}" y="${TEXT_Y}" font-family="Courier New, ui-monospace, monospace" font-size="${FONT_SIZE}" font-weight="bold" fill="${fill}" filter="url(#${filterId})">${escapeXml(text)}</text>
+  <rect width="${width}" height="${HEIGHT}" rx="4" fill="none" stroke="${border}" stroke-opacity="0.16" stroke-width="0.5"/>
+  ${renderText({ x: PAD_X, y: TEXT_Y, fill, filterId, main, cursor, blink: blink && Boolean(cursor) })}
 </svg>`;
 }

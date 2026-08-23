@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { formatMetric } from "./format.js";
 import { parseBadgePath } from "./parse.js";
-import { buildDisplayText } from "./render.js";
+import { buildDisplayText, renderBadge, splitCursor } from "./render.js";
 
 test("parses label-message-color", () => {
   assert.deepEqual(parseBadgePath("build-passing-brightgreen"), {
@@ -52,4 +52,26 @@ test("formatMetric compact numbers", () => {
   assert.equal(formatMetric(1280), "1.3k");
   assert.equal(formatMetric(12800), "13k");
   assert.equal(formatMetric(1_200_000), "1.2M");
+});
+
+test("splits amber cursor suffix", () => {
+  assert.deepEqual(splitCursor("$ stars: 128 █"), {
+    main: "$ stars: 128",
+    cursor: " █"
+  });
+  assert.deepEqual(splitCursor(">_ build [PASSING]"), {
+    main: ">_ build [PASSING]",
+    cursor: null
+  });
+});
+
+test("renders SMIL blink when requested", () => {
+  const svg = renderBadge({
+    label: "build",
+    message: "passing",
+    theme: "amber",
+    blink: true
+  });
+  assert.match(svg, /<animate attributeName="opacity"/);
+  assert.match(svg, /<tspan>/);
 });
