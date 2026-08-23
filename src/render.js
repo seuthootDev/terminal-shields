@@ -50,26 +50,36 @@ export function buildDisplayText({ label, message, theme }) {
   return `$ ${message} █`;
 }
 
+function neonFilterDef(id) {
+  return `<filter id="${id}" x="-35%" y="-45%" width="170%" height="190%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="glow-tight"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" result="glow-mid"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.2" result="glow-wide"/>
+      <feMerge>
+        <feMergeNode in="glow-wide"/>
+        <feMergeNode in="glow-mid"/>
+        <feMergeNode in="glow-tight"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>`;
+}
+
 export function renderBadge({ label = "", message, theme = "amber", fg }) {
   const palette = THEMES[theme] ?? THEMES.amber;
   const text = buildDisplayText({ label, message, theme: palette.name });
   const width = Math.max(40, Math.ceil(PAD_X * 2 + text.length * CHAR_W));
   const fill = fg ?? palette.fg;
-  const filterId = `glow-${palette.name}`;
+  const filterId = `neon-${palette.name}`;
+  const border = fill;
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${HEIGHT}" viewBox="0 0 ${width} ${HEIGHT}" role="img" aria-label="${escapeXml(text)}">
   <title>${escapeXml(text)}</title>
   <defs>
-    <filter id="${filterId}" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="0.6" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
+    ${neonFilterDef(filterId)}
   </defs>
-  <rect width="${width}" height="${HEIGHT}" rx="3" fill="${palette.bg}" stroke="${palette.stroke}" stroke-width="1"/>
+  <rect width="${width}" height="${HEIGHT}" rx="4" fill="${palette.bg}"/>
+  <rect width="${width}" height="${HEIGHT}" rx="4" fill="none" stroke="${border}" stroke-opacity="0.28" stroke-width="0.75"/>
   <text x="${PAD_X}" y="${TEXT_Y}" font-family="Courier New, ui-monospace, monospace" font-size="${FONT_SIZE}" font-weight="bold" fill="${fill}" filter="url(#${filterId})">${escapeXml(text)}</text>
 </svg>`;
 }

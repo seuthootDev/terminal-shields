@@ -1,23 +1,23 @@
 export const THEMES = {
   amber: {
     name: "amber",
-    bg: "#120c02",
-    stroke: "#4a3206",
-    fg: "#ffb000",
+    bg: "#0c0a06",
+    stroke: "#ffb000",
+    fg: "#ffc840",
     format: "prompt"
   },
   green: {
     name: "green",
-    bg: "#041204",
-    stroke: "#30363d",
-    fg: "#00ff66",
+    bg: "#030a05",
+    stroke: "#00ff66",
+    fg: "#5cff9a",
     format: "crt"
   },
   cyan: {
     name: "cyan",
-    bg: "#05131a",
-    stroke: "#0e3a4e",
-    fg: "#00ffff",
+    bg: "#040f14",
+    stroke: "#00e5ff",
+    fg: "#66ffff",
     format: "meter"
   }
 };

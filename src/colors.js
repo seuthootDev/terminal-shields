@@ -1,20 +1,20 @@
 const NAMED_COLORS = {
-  brightgreen: "#44cc00",
-  green: "#67ac09",
-  yellow: "#d8b800",
-  yellowgreen: "#95991a",
-  orange: "#ea7233",
-  red: "#dd4343",
-  blue: "#007ec6",
-  grey: "#555555",
-  gray: "#555555",
-  lightgrey: "#939393",
-  lightgray: "#939393",
-  critical: "#dd4343",
-  important: "#ea7233",
-  success: "#44cc00",
-  informational: "#007ec6",
-  inactive: "#939393"
+  brightgreen: "#55ee22",
+  green: "#78d418",
+  yellow: "#ffe033",
+  yellowgreen: "#b8e020",
+  orange: "#ff8844",
+  red: "#ff5555",
+  blue: "#33bbff",
+  grey: "#888888",
+  gray: "#888888",
+  lightgrey: "#bbbbbb",
+  lightgray: "#bbbbbb",
+  critical: "#ff5555",
+  important: "#ff8844",
+  success: "#55ee22",
+  informational: "#33bbff",
+  inactive: "#bbbbbb"
 };
 
 const HEX = /^#?([\da-f]{3}|[\da-f]{6})$/i;
