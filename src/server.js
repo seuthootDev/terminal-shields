@@ -2,13 +2,14 @@ import express from "express";
 
 import { inferTheme, toSvgColor } from "./colors.js";
 import { formatMetric } from "./format.js";
-import { fetchGithubLicense, fetchGithubStars } from "./github.js";
+import { fetchGithubLastCommit, fetchGithubLicense, fetchGithubStars } from "./github.js";
 import { homePageHtml } from "./homePage.js";
 import { fetchLogoPath } from "./logo.js";
 import { fetchNpmVersion } from "./npm.js";
 import { parseBadgePath } from "./parse.js";
 import { renderBadge } from "./render.js";
 import { resolveTheme } from "./themes.js";
+import { fetchWebsiteStatus } from "./website.js";
 
 const app = express();
 const PORT = Number.parseInt(process.env.PORT ?? "8000", 10);
@@ -133,6 +134,20 @@ app.get("/github/stars/:user/:repo", async (req, res) => {
 app.get("/github/license/:user/:repo", async (req, res) => {
   const { user, repo } = req.params;
   await sendServiceBadge(req, res, () => fetchGithubLicense(user, repo));
+});
+
+app.get("/github/last-commit/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  const branch = String(req.query.branch ?? "").trim() || undefined;
+  await sendServiceBadge(req, res, () => fetchGithubLastCommit(user, repo, branch));
+});
+
+app.get("/website", async (req, res) => {
+  const upMessage = String(req.query.upMessage ?? "up").trim() || "up";
+  const downMessage = String(req.query.downMessage ?? "down").trim() || "down";
+  await sendServiceBadge(req, res, () =>
+    fetchWebsiteStatus(req.query.url, { upMessage, downMessage })
+  );
 });
 
 app.get("/npm/v/@:scope/:pkg", async (req, res) => {

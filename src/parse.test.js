@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { formatMetric } from "./format.js";
+import { formatMetric, formatRelativeDate } from "./format.js";
 import { parseBadgePath } from "./parse.js";
 import { buildDisplayText, renderBadge, splitCursor } from "./render.js";
 
@@ -52,6 +52,16 @@ test("formatMetric compact numbers", () => {
   assert.equal(formatMetric(1280), "1.3k");
   assert.equal(formatMetric(12800), "13k");
   assert.equal(formatMetric(1_200_000), "1.2M");
+});
+
+test("formatRelativeDate shields-style buckets", () => {
+  const now = new Date("2026-08-27T12:00:00Z"); // a thursday
+  assert.equal(formatRelativeDate(new Date("2026-08-27T01:00:00Z"), now), "today");
+  assert.equal(formatRelativeDate(new Date("2026-08-26T12:00:00Z"), now), "yesterday");
+  assert.equal(formatRelativeDate(new Date("2026-08-23T12:00:00Z"), now), "last sunday");
+  assert.equal(formatRelativeDate(new Date("2026-08-13T12:00:00Z"), now), "2 weeks ago");
+  assert.equal(formatRelativeDate(new Date("2026-06-27T12:00:00Z"), now), "2 months ago");
+  assert.equal(formatRelativeDate(new Date("2024-08-27T12:00:00Z"), now), "2 years ago");
 });
 
 test("splits amber cursor suffix", () => {

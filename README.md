@@ -33,6 +33,8 @@ Live GitHub / npm:
 
 - repo stars: ![gh stars](https://terminal-shields.vercel.app/github/stars/badges/shields)
 - repo license: ![gh license](https://terminal-shields.vercel.app/github/license/badges/shields)
+- last commit: ![gh last commit](https://terminal-shields.vercel.app/github/last-commit/badges/shields)
+- live demo: ![live demo](https://terminal-shields.vercel.app/website?url=https%3A%2F%2Fterminal-shields.vercel.app)
 - npm package: ![npm](https://terminal-shields.vercel.app/npm/v/express)
 - scoped npm: ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
 
@@ -122,6 +124,8 @@ Named colors follow Shields: `brightgreen`, `green`, `yellow`, `orange`, `red`, 
 ```
 https://terminal-shields.vercel.app/github/stars/:user/:repo
 https://terminal-shields.vercel.app/github/license/:user/:repo
+https://terminal-shields.vercel.app/github/last-commit/:user/:repo?branch=main
+https://terminal-shields.vercel.app/website?url=https://example.com
 https://terminal-shields.vercel.app/npm/v/:package
 https://terminal-shields.vercel.app/npm/v/@:scope/:package
 https://terminal-shields.vercel.app/npm/v/:package/:tag
@@ -130,9 +134,15 @@ https://terminal-shields.vercel.app/npm/v/:package/:tag
 ```markdown
 ![stars](https://terminal-shields.vercel.app/github/stars/USER/REPO)
 ![license](https://terminal-shields.vercel.app/github/license/USER/REPO)
+![last commit](https://terminal-shields.vercel.app/github/last-commit/USER/REPO)
+![live demo](https://terminal-shields.vercel.app/website?url=https%3A%2F%2Fyour-demo.example.com)
 ![npm](https://terminal-shields.vercel.app/npm/v/express)
 ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
 ```
+
+`github/last-commit` reports the tip commit's age the way GitHub itself phrases it: `today`, `yesterday`, `last sunday` (2–6 days back), then `N weeks/months/years ago`. `?branch=` picks a branch other than the default.
+
+`website` pings the given `url` and renders `up` (green) or `down` (red) — pass `?upMessage=` / `?downMessage=` to relabel either state. It's the "live demo" badge.
 
 Optional: set `GITHUB_TOKEN` on Vercel for higher GitHub API limits.
 

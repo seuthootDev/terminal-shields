@@ -186,6 +186,8 @@ export function homePageHtml() {
             <option value="static">static badge</option>
             <option value="github-stars">github stars</option>
             <option value="github-license">github license</option>
+            <option value="github-last-commit">github last commit</option>
+            <option value="website">website (live demo)</option>
             <option value="npm">npm version</option>
           </select>
         </label>
@@ -251,6 +253,14 @@ export function homePageHtml() {
         <label id="field-repo" class="hidden">
           github repo
           <input id="repo" value="terminal-shields" autocomplete="off" placeholder="repo name">
+        </label>
+        <label id="field-branch" class="hidden">
+          branch (optional)
+          <input id="branch" value="" autocomplete="off" placeholder="default branch">
+        </label>
+        <label id="field-url" class="hidden full">
+          site url
+          <input id="siteUrl" value="https://terminal-shields.vercel.app" autocomplete="off" placeholder="https://example.com">
         </label>
         <label id="field-pkg" class="hidden full">
           npm package
@@ -332,6 +342,8 @@ export function homePageHtml() {
       colorHex: document.getElementById("colorHex"),
       user: document.getElementById("user"),
       repo: document.getElementById("repo"),
+      branch: document.getElementById("branch"),
+      siteUrl: document.getElementById("siteUrl"),
       pkg: document.getElementById("pkg"),
       tag: document.getElementById("tag"),
       logo: document.getElementById("logo"),
@@ -360,12 +372,16 @@ export function homePageHtml() {
       show("field-message", t === "static");
       show("field-user", t.startsWith("github"));
       show("field-repo", t.startsWith("github"));
+      show("field-branch", t === "github-last-commit");
+      show("field-url", t === "website");
       show("field-pkg", t === "npm");
       show("field-tag", t === "npm");
       els.hint.textContent = {
         static: "Pick a named color from the select, or type a custom hex. Background uses terminal presets.",
         "github-stars": "Enter owner + repo. Color/background optional overrides.",
         "github-license": "Enter owner + repo. Color/background optional overrides.",
+        "github-last-commit": "Enter owner + repo. Shows 'today' / 'yesterday' / 'last sunday' / 'N months ago', etc.",
+        website: "Enter a URL to ping. Shows 'up' (green) or 'down' (red) — good for a 'live demo' badge.",
         npm: "Package name (+ optional tag). Color/background optional overrides.",
       }[t];
     }
@@ -410,6 +426,12 @@ export function homePageHtml() {
       }
       if (t === "github-license") {
         return "/github/license/" + encodeURIComponent(els.user.value.trim()) + "/" + encodeURIComponent(els.repo.value.trim()) + querySuffix();
+      }
+      if (t === "github-last-commit") {
+        return "/github/last-commit/" + encodeURIComponent(els.user.value.trim()) + "/" + encodeURIComponent(els.repo.value.trim()) + querySuffix({ branch: els.branch.value.trim() });
+      }
+      if (t === "website") {
+        return "/website" + querySuffix({ url: els.siteUrl.value.trim() });
       }
       const pkg = els.pkg.value.trim();
       const tag = els.tag.value.trim() || "latest";

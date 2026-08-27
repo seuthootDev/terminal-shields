@@ -1,3 +1,26 @@
+const DAY_MS = 24 * 60 * 60 * 1000;
+const WEEKDAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+
+/**
+ * Shields-style relative date: today, yesterday, "last sunday" (2-6 days back),
+ * then week/month/year buckets further out.
+ */
+export function formatRelativeDate(date, now = new Date()) {
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / DAY_MS);
+  if (diffDays <= 0) return "today";
+  if (diffDays === 1) return "yesterday";
+  if (diffDays < 7) return `last ${WEEKDAYS[date.getDay()]}`;
+
+  const diffWeeks = Math.round(diffDays / 7);
+  if (diffDays < 31) return diffWeeks <= 1 ? "last week" : `${diffWeeks} weeks ago`;
+
+  const diffMonths = Math.round(diffDays / 30.44);
+  if (diffDays < 365) return diffMonths <= 1 ? "last month" : `${diffMonths} months ago`;
+
+  const diffYears = Math.round(diffDays / 365.25);
+  return diffYears <= 1 ? "last year" : `${diffYears} years ago`;
+}
+
 /** Compact number like Shields `metric`: 1280 -> 1.3k, 12800 -> 13k */
 export function formatMetric(n) {
   const num = Number(n);
