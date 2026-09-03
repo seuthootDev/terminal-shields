@@ -34,6 +34,14 @@ Live GitHub / npm:
 - repo stars: ![gh stars](https://terminal-shields.vercel.app/github/stars/badges/shields)
 - repo license: ![gh license](https://terminal-shields.vercel.app/github/license/badges/shields)
 - last commit: ![gh last commit](https://terminal-shields.vercel.app/github/last-commit/badges/shields)
+- forks: ![gh forks](https://terminal-shields.vercel.app/github/forks/badges/shields)
+- watchers: ![gh watchers](https://terminal-shields.vercel.app/github/watchers/badges/shields)
+- contributors: ![gh contributors](https://terminal-shields.vercel.app/github/contributors/badges/shields)
+- open issues: ![gh issues](https://terminal-shields.vercel.app/github/issues/badges/shields)
+- open PRs: ![gh PRs](https://terminal-shields.vercel.app/github/issues-pr/badges/shields)
+- repo size: ![gh repo size](https://terminal-shields.vercel.app/github/repo-size/badges/shields)
+- latest release: ![gh release](https://terminal-shields.vercel.app/github/v/release/badges/shields)
+- Actions build: ![gh workflow](https://terminal-shields.vercel.app/github/actions/workflow/status/badges/shields/deploy-docs.yml)
 - live demo: ![live demo](https://terminal-shields.vercel.app/website?url=https%3A%2F%2Fterminal-shields.vercel.app)
 - npm package: ![npm](https://terminal-shields.vercel.app/npm/v/express)
 - scoped npm: ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
@@ -125,6 +133,14 @@ Named colors follow Shields: `brightgreen`, `green`, `yellow`, `orange`, `red`, 
 https://terminal-shields.vercel.app/github/stars/:user/:repo
 https://terminal-shields.vercel.app/github/license/:user/:repo
 https://terminal-shields.vercel.app/github/last-commit/:user/:repo?branch=main
+https://terminal-shields.vercel.app/github/forks/:user/:repo
+https://terminal-shields.vercel.app/github/watchers/:user/:repo
+https://terminal-shields.vercel.app/github/contributors/:user/:repo
+https://terminal-shields.vercel.app/github/issues/:user/:repo
+https://terminal-shields.vercel.app/github/issues-pr/:user/:repo
+https://terminal-shields.vercel.app/github/repo-size/:user/:repo
+https://terminal-shields.vercel.app/github/v/release/:user/:repo
+https://terminal-shields.vercel.app/github/actions/workflow/status/:user/:repo/:workflow
 https://terminal-shields.vercel.app/website?url=https://example.com
 https://terminal-shields.vercel.app/npm/v/:package
 https://terminal-shields.vercel.app/npm/v/@:scope/:package
@@ -135,12 +151,22 @@ https://terminal-shields.vercel.app/npm/v/:package/:tag
 ![stars](https://terminal-shields.vercel.app/github/stars/USER/REPO)
 ![license](https://terminal-shields.vercel.app/github/license/USER/REPO)
 ![last commit](https://terminal-shields.vercel.app/github/last-commit/USER/REPO)
+![forks](https://terminal-shields.vercel.app/github/forks/USER/REPO)
+![watchers](https://terminal-shields.vercel.app/github/watchers/USER/REPO)
+![contributors](https://terminal-shields.vercel.app/github/contributors/USER/REPO)
+![issues](https://terminal-shields.vercel.app/github/issues/USER/REPO)
+![PRs](https://terminal-shields.vercel.app/github/issues-pr/USER/REPO)
+![repo size](https://terminal-shields.vercel.app/github/repo-size/USER/REPO)
+![release](https://terminal-shields.vercel.app/github/v/release/USER/REPO)
+![build](https://terminal-shields.vercel.app/github/actions/workflow/status/USER/REPO/ci.yml)
 ![live demo](https://terminal-shields.vercel.app/website?url=https%3A%2F%2Fyour-demo.example.com)
 ![npm](https://terminal-shields.vercel.app/npm/v/express)
 ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
 ```
 
 `github/last-commit` reports the tip commit's age the way GitHub itself phrases it: `today`, `yesterday`, `last sunday` (2–6 days back), then `N weeks/months/years ago`. `?branch=` picks a branch other than the default.
+
+`github/watchers` reports subscriber count (GitHub's "Watch" button, not stargazers). `github/contributors` counts non-anonymous contributors. `github/issues`/`issues-pr` are open counts (green at zero, yellow otherwise). `github/v/release` reads the latest GitHub Release, falling back to the newest tag if the repo has no releases. `github/actions/workflow/status` takes the workflow file name (e.g. `ci.yml`) and colors by the most recent run's conclusion.
 
 `website` pings the given `url` and renders `up` (green) or `down` (red) — pass `?upMessage=` / `?downMessage=` to relabel either state. It's the "live demo" badge.
 

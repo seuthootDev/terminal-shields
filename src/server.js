@@ -2,7 +2,19 @@ import express from "express";
 
 import { inferTheme, toSvgColor } from "./colors.js";
 import { formatMetric } from "./format.js";
-import { fetchGithubLastCommit, fetchGithubLicense, fetchGithubStars } from "./github.js";
+import {
+  fetchGithubContributors,
+  fetchGithubForks,
+  fetchGithubIssues,
+  fetchGithubIssuesPr,
+  fetchGithubLastCommit,
+  fetchGithubLicense,
+  fetchGithubRelease,
+  fetchGithubRepoSize,
+  fetchGithubStars,
+  fetchGithubWatchers,
+  fetchGithubWorkflowStatus
+} from "./github.js";
 import { homePageHtml } from "./homePage.js";
 import { fetchLogoPath } from "./logo.js";
 import { fetchNpmVersion } from "./npm.js";
@@ -140,6 +152,55 @@ app.get("/github/last-commit/:user/:repo", async (req, res) => {
   const { user, repo } = req.params;
   const branch = String(req.query.branch ?? "").trim() || undefined;
   await sendServiceBadge(req, res, () => fetchGithubLastCommit(user, repo, branch));
+});
+
+app.get("/github/forks/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, async () => {
+    const data = await fetchGithubForks(user, repo);
+    return { ...data, message: formatMetric(data.message) };
+  });
+});
+
+app.get("/github/watchers/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, async () => {
+    const data = await fetchGithubWatchers(user, repo);
+    return { ...data, message: formatMetric(data.message) };
+  });
+});
+
+app.get("/github/contributors/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, async () => {
+    const data = await fetchGithubContributors(user, repo);
+    return { ...data, message: formatMetric(data.message) };
+  });
+});
+
+app.get("/github/issues/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, () => fetchGithubIssues(user, repo));
+});
+
+app.get("/github/issues-pr/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, () => fetchGithubIssuesPr(user, repo));
+});
+
+app.get("/github/repo-size/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, () => fetchGithubRepoSize(user, repo));
+});
+
+app.get("/github/v/release/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, () => fetchGithubRelease(user, repo));
+});
+
+app.get("/github/actions/workflow/status/:user/:repo/:workflow", async (req, res) => {
+  const { user, repo, workflow } = req.params;
+  await sendServiceBadge(req, res, () => fetchGithubWorkflowStatus(user, repo, workflow));
 });
 
 app.get("/website", async (req, res) => {

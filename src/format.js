@@ -21,6 +21,17 @@ export function formatRelativeDate(date, now = new Date()) {
   return diffYears <= 1 ? "last year" : `${diffYears} years ago`;
 }
 
+/** Human-readable size from KB, GitHub `size` style: 900 -> 900 KB, 2048 -> 2 MB */
+export function formatKbSize(kb) {
+  const num = Number(kb);
+  if (!Number.isFinite(num) || num < 0) return String(kb);
+  if (num < 1024) return `${Math.round(num)} KB`;
+  const mb = num / 1024;
+  if (mb < 1024) return `${mb < 10 ? mb.toFixed(1).replace(/\.0$/, "") : Math.round(mb)} MB`;
+  const gb = mb / 1024;
+  return `${gb < 10 ? gb.toFixed(1).replace(/\.0$/, "") : Math.round(gb)} GB`;
+}
+
 /** Compact number like Shields `metric`: 1280 -> 1.3k, 12800 -> 13k */
 export function formatMetric(n) {
   const num = Number(n);
