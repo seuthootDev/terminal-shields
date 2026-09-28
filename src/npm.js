@@ -28,3 +28,35 @@ export async function fetchNpmVersion(packageName, tag = "latest") {
     color: "blue"
   };
 }
+
+const NPM_DOWNLOADS = "https://api.npmjs.org/downloads/point";
+
+const DOWNLOAD_PERIODS = {
+  dw: { period: "last-week", unit: "week" },
+  dm: { period: "last-month", unit: "month" },
+  dy: { period: "last-year", unit: "year" }
+};
+
+export async function fetchNpmDownloads(packageName, interval) {
+  const spec = DOWNLOAD_PERIODS[interval];
+  if (!spec) throw new Error("interval must be dw, dm or dy");
+  const name = String(packageName ?? "").trim().replace(/^\/+|\/+$/g, "");
+  if (!name) throw new Error("package required");
+
+  // point API takes scoped names as-is: /last-month/@scope/name
+  const slug = name.startsWith("@") ? name : encodeURIComponent(name);
+  const res = await fetch(`${NPM_DOWNLOADS}/${spec.period}/${slug}`, {
+    headers: { Accept: "application/json", "User-Agent": "terminal-shields" }
+  });
+  if (res.status === 404) throw new Error("package not found");
+  if (!res.ok) throw new Error(`npm downloads ${res.status}`);
+
+  const data = await res.json();
+  const count = Number(data.downloads ?? 0);
+  return {
+    label: "downloads",
+    count,
+    unit: spec.unit,
+    color: count > 0 ? "brightgreen" : "lightgrey"
+  };
+}

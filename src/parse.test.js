@@ -52,6 +52,8 @@ test("formatMetric compact numbers", () => {
   assert.equal(formatMetric(1280), "1.3k");
   assert.equal(formatMetric(12800), "13k");
   assert.equal(formatMetric(1_200_000), "1.2M");
+  assert.equal(formatMetric(5_375_000_000), "5.4B");
+  assert.equal(formatMetric(12_000_000_000), "12B");
 });
 
 test("formatRelativeDate shields-style buckets", () => {
