@@ -42,9 +42,14 @@ Live GitHub / npm:
 - repo size: ![gh repo size](https://terminal-shields.vercel.app/github/repo-size/badges/shields)
 - latest release: ![gh release](https://terminal-shields.vercel.app/github/v/release/badges/shields)
 - Actions build: ![gh workflow](https://terminal-shields.vercel.app/github/actions/workflow/status/badges/shields/deploy-docs.yml)
+- commit activity: ![gh commit activity](https://terminal-shields.vercel.app/github/commit-activity/m/badges/shields)
+- top language: ![gh top language](https://terminal-shields.vercel.app/github/languages/top/badges/shields)
+- Hacktoberfest: ![hacktoberfest](https://terminal-shields.vercel.app/github/hacktoberfest/2026/badges/shields?suggestion_label=good%20first%20issue)
 - live demo: ![live demo](https://terminal-shields.vercel.app/website?url=https%3A%2F%2Fterminal-shields.vercel.app)
 - npm package: ![npm](https://terminal-shields.vercel.app/npm/v/express)
 - scoped npm: ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
+- npm downloads: ![npm downloads](https://terminal-shields.vercel.app/npm/dm/express)
+- custom JSON endpoint: ![endpoint](https://terminal-shields.vercel.app/endpoint?url=https%3A%2F%2Fshields.redsparr0w.com%2F2473%2Fmonday)
 
 ## Themes
 
@@ -141,10 +146,15 @@ https://terminal-shields.vercel.app/github/issues-pr/:user/:repo
 https://terminal-shields.vercel.app/github/repo-size/:user/:repo
 https://terminal-shields.vercel.app/github/v/release/:user/:repo
 https://terminal-shields.vercel.app/github/actions/workflow/status/:user/:repo/:workflow
+https://terminal-shields.vercel.app/github/commit-activity/:interval/:user/:repo?branch=main
+https://terminal-shields.vercel.app/github/languages/top/:user/:repo
+https://terminal-shields.vercel.app/github/hacktoberfest/:year/:user/:repo?suggestion_label=good%20first%20issue
 https://terminal-shields.vercel.app/website?url=https://example.com
 https://terminal-shields.vercel.app/npm/v/:package
 https://terminal-shields.vercel.app/npm/v/@:scope/:package
 https://terminal-shields.vercel.app/npm/v/:package/:tag
+https://terminal-shields.vercel.app/npm/:interval/:package
+https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
 ```
 
 ```markdown
@@ -159,14 +169,33 @@ https://terminal-shields.vercel.app/npm/v/:package/:tag
 ![repo size](https://terminal-shields.vercel.app/github/repo-size/USER/REPO)
 ![release](https://terminal-shields.vercel.app/github/v/release/USER/REPO)
 ![build](https://terminal-shields.vercel.app/github/actions/workflow/status/USER/REPO/ci.yml)
+![commit activity](https://terminal-shields.vercel.app/github/commit-activity/m/USER/REPO)
+![top language](https://terminal-shields.vercel.app/github/languages/top/USER/REPO)
+![hacktoberfest](https://terminal-shields.vercel.app/github/hacktoberfest/2026/USER/REPO)
 ![live demo](https://terminal-shields.vercel.app/website?url=https%3A%2F%2Fyour-demo.example.com)
 ![npm](https://terminal-shields.vercel.app/npm/v/express)
 ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
+![downloads](https://terminal-shields.vercel.app/npm/dm/express)
+![custom](https://terminal-shields.vercel.app/endpoint?url=https%3A%2F%2Fexample.com%2Fbadge.json)
 ```
 
 `github/last-commit` reports the tip commit's age the way GitHub itself phrases it: `today`, `yesterday`, `last sunday` (2–6 days back), then `N weeks/months/years ago`. `?branch=` picks a branch other than the default.
 
 `github/watchers` reports subscriber count (GitHub's "Watch" button, not stargazers). `github/contributors` counts non-anonymous contributors. `github/issues`/`issues-pr` are open counts (green at zero, yellow otherwise). `github/v/release` reads the latest GitHub Release, falling back to the newest tag if the repo has no releases. `github/actions/workflow/status` takes the workflow file name (e.g. `ci.yml`) and colors by the most recent run's conclusion.
+
+`github/commit-activity` counts commits in the last week / month / year (`w` / `m` / `y`) or all time (`t`), e.g. `58/month`. `?branch=` picks a branch other than the default. `github/languages/top` shows the repo's largest language and its share of bytes (`javascript: 99.8%`).
+
+`github/hacktoberfest/:year` follows the October event (UTC): before it starts it counts down (`3 days to go`), during October it shows PRs opened that month plus days left, and afterwards `is over! (N PRs)`. Open issues carrying the `?suggestion_label=` label (default `hacktoberfest`) are listed before and during the event.
+
+`npm/dw`, `npm/dm`, `npm/dy` show weekly / monthly / yearly downloads (`475M/month`). Scoped packages work too: `/npm/dm/@babel/core`.
+
+`endpoint` renders any JSON that follows the [Shields endpoint schema](https://shields.io/badges/endpoint-badge), so you can badge whatever data you host:
+
+```json
+{ "schemaVersion": 1, "label": "hello", "message": "sweet world", "color": "orange" }
+```
+
+`label`, `color`, `namedLogo` (a Simple Icons slug), `isError` and `cacheSeconds` (300s minimum) are honored; `?theme=`, `?bg=`, `?logo=`, `?color=` still override.
 
 `website` pings the given `url` and renders `up` (green) or `down` (red) — pass `?upMessage=` / `?downMessage=` to relabel either state. It's the "live demo" badge.
 

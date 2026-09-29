@@ -47,10 +47,11 @@ export function formatMetric(n) {
     }
     return `${sign}${Math.round(scaled)}k`;
   }
-  const scaled = abs / 1_000_000;
+  const [divisor, suffix] = abs < 1_000_000_000 ? [1_000_000, "M"] : [1_000_000_000, "B"];
+  const scaled = abs / divisor;
   if (scaled < 10) {
     const one = scaled.toFixed(1);
-    return one.endsWith(".0") ? `${sign}${Math.round(scaled)}M` : `${sign}${one}M`;
+    return one.endsWith(".0") ? `${sign}${Math.round(scaled)}${suffix}` : `${sign}${one}${suffix}`;
   }
-  return `${sign}${Math.round(scaled)}M`;
+  return `${sign}${Math.round(scaled)}${suffix}`;
 }

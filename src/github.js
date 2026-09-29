@@ -1,6 +1,7 @@
 import { formatKbSize, formatRelativeDate } from "./format.js";
 
 const GITHUB_API = "https://api.github.com";
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function githubHeaders() {
   const headers = {
@@ -70,15 +71,22 @@ export async function fetchGithubRepoSize(user, repo) {
   };
 }
 
-async function fetchOpenIssueCount(user, repo, kind) {
-  const q = [`repo:${encodeURIComponent(user)}/${encodeURIComponent(repo)}`, `type:${kind}`, "state:open"].join("+");
-  const url = `${GITHUB_API}/search/issues?q=${q}&per_page=1`;
+async function searchIssueCount(user, repo, qualifiers) {
+  const q = [`repo:${user}/${repo}`, ...qualifiers].join(" ");
+  const url = `${GITHUB_API}/search/issues?q=${encodeURIComponent(q)}&per_page=1`;
   const res = await fetch(url, { headers: githubHeaders() });
+  if (res.status === 422) {
+    throw new Error("repo not found");
+  }
   if (!res.ok) {
     throw new Error(`GitHub API ${res.status}`);
   }
   const data = await res.json();
   return Number(data.total_count ?? 0);
+}
+
+function fetchOpenIssueCount(user, repo, kind) {
+  return searchIssueCount(user, repo, [`type:${kind}`, "state:open"]);
 }
 
 export async function fetchGithubIssues(user, repo) {
@@ -184,5 +192,118 @@ export async function fetchGithubLastCommit(user, repo, branch) {
     label: "last commit",
     message: formatRelativeDate(new Date(dateStr)),
     color: "blue"
+  };
+}
+
+const COMMIT_INTERVALS = {
+  w: { days: 7, unit: "week" },
+  m: { days: 30, unit: "month" },
+  y: { days: 365, unit: "year" },
+  t: { days: null, unit: null }
+};
+
+export async function fetchGithubCommitActivity(user, repo, interval, branch, now = new Date()) {
+  const spec = COMMIT_INTERVALS[interval];
+  if (!spec) {
+    throw new Error("interval must be w, m, y or t");
+  }
+  const params = new URLSearchParams({ per_page: "1" });
+  if (branch) params.set("sha", branch);
+  if (spec.days) params.set("since", new Date(now.getTime() - spec.days * DAY_MS).toISOString());
+  const url = `${GITHUB_API}/repos/${encodeURIComponent(user)}/${encodeURIComponent(repo)}/commits?${params}`;
+  const res = await fetch(url, { headers: githubHeaders() });
+  if (res.status === 404) {
+    throw new Error("repo not found");
+  }
+  if (res.status === 409) {
+    // empty repository
+    return { label: "commit activity", count: 0, unit: spec.unit, color: "lightgrey" };
+  }
+  if (!res.ok) {
+    throw new Error(`GitHub API ${res.status}`);
+  }
+  const data = await res.json();
+  const count = countFromLastPageLink(res.headers.get("link"), data.length);
+  return {
+    label: spec.unit ? "commit activity" : "commits",
+    count,
+    unit: spec.unit,
+    color: count > 0 ? "blue" : "lightgrey"
+  };
+}
+
+export async function fetchGithubTopLanguage(user, repo) {
+  const url = `${GITHUB_API}/repos/${encodeURIComponent(user)}/${encodeURIComponent(repo)}/languages`;
+  const res = await fetch(url, { headers: githubHeaders() });
+  if (res.status === 404) {
+    throw new Error("repo not found");
+  }
+  if (!res.ok) {
+    throw new Error(`GitHub API ${res.status}`);
+  }
+  const top = topLanguage(await res.json());
+  if (!top) {
+    return { label: "language", message: "none", color: "lightgrey" };
+  }
+  return { label: top.name.toLowerCase(), message: top.percent, color: "blue" };
+}
+
+/** { JavaScript: 900, CSS: 100 } -> { name: "JavaScript", percent: "90.0%" } */
+export function topLanguage(bytesByLanguage) {
+  const entries = Object.entries(bytesByLanguage ?? {});
+  const total = entries.reduce((sum, [, bytes]) => sum + bytes, 0);
+  if (!total) return null;
+  const [name, bytes] = entries.reduce((best, entry) => (entry[1] > best[1] ? entry : best));
+  return { name, percent: `${((bytes / total) * 100).toFixed(1)}%` };
+}
+
+function plural(n, word, suffix = "s") {
+  return `${n} ${word}${n === 1 ? "" : suffix}`;
+}
+
+/** Where `now` falls relative to October of `year` (UTC). */
+export function hacktoberfestPhase(year, now = new Date()) {
+  const start = Date.UTC(year, 9, 1);
+  const end = Date.UTC(year, 10, 1);
+  const t = now.getTime();
+  if (t < start) return { phase: "before", days: Math.ceil((start - t) / DAY_MS) };
+  if (t < end) return { phase: "during", days: Math.ceil((end - t) / DAY_MS) };
+  return { phase: "after", days: 0 };
+}
+
+export function hacktoberfestMessage({ phase, days }, { issues = 0, prs = 0 } = {}) {
+  if (phase === "before") {
+    const lead = `${plural(days, "day")} to go`;
+    return issues > 0 ? `${lead}, ${plural(issues, "open issue")}` : lead;
+  }
+  if (phase === "during") {
+    const parts = [];
+    if (issues > 0) parts.push(plural(issues, "open issue"));
+    parts.push(plural(prs, "PR"));
+    parts.push(`${plural(days, "day")} left`);
+    return parts.join(", ");
+  }
+  return `is over! (${plural(prs, "PR")})`;
+}
+
+export async function fetchGithubHacktoberfest(user, repo, year, suggestionLabel = "hacktoberfest", now = new Date()) {
+  if (!/^\d{4}$/.test(String(year))) {
+    throw new Error("invalid year");
+  }
+  const y = Number(year);
+  const phase = hacktoberfestPhase(y, now);
+  const [issues, prs] = await Promise.all([
+    phase.phase === "after"
+      ? 0
+      : searchIssueCount(user, repo, ["is:issue", "is:open", `label:"${suggestionLabel.replaceAll('"', "")}"`]),
+    phase.phase === "before"
+      ? 0
+      : searchIssueCount(user, repo, ["is:pr", `created:${y}-10-01..${y}-10-31`])
+  ]);
+  const color = { before: "blue", during: "orange", after: "grey" }[phase.phase];
+  return {
+    label: `hacktoberfest ${y}`,
+    message: hacktoberfestMessage(phase, { issues, prs }),
+    color
   };
 }

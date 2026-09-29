@@ -1,10 +1,13 @@
 import express from "express";
 
 import { inferTheme, toSvgColor } from "./colors.js";
+import { fetchEndpointBadge } from "./endpoint.js";
 import { formatMetric } from "./format.js";
 import {
+  fetchGithubCommitActivity,
   fetchGithubContributors,
   fetchGithubForks,
+  fetchGithubHacktoberfest,
   fetchGithubIssues,
   fetchGithubIssuesPr,
   fetchGithubLastCommit,
@@ -12,12 +15,13 @@ import {
   fetchGithubRelease,
   fetchGithubRepoSize,
   fetchGithubStars,
+  fetchGithubTopLanguage,
   fetchGithubWatchers,
   fetchGithubWorkflowStatus
 } from "./github.js";
 import { homePageHtml } from "./homePage.js";
 import { fetchLogoPath } from "./logo.js";
-import { fetchNpmVersion } from "./npm.js";
+import { fetchNpmDownloads, fetchNpmVersion } from "./npm.js";
 import { parseBadgePath } from "./parse.js";
 import { renderBadge } from "./render.js";
 import { resolveTheme } from "./themes.js";
@@ -89,9 +93,9 @@ async function sendServiceBadge(req, res, loader) {
       color,
       theme: pickTheme(req, color),
       bg: pickBg(req),
-      logo: pickLogo(req),
+      logo: pickLogo(req) ?? data.logo,
       blink: parseBlink(req.query),
-      maxAge: 1800
+      maxAge: data.maxAge ?? 1800
     });
   } catch (error) {
     sendError(res, String(error?.message ?? error));
@@ -203,12 +207,51 @@ app.get("/github/actions/workflow/status/:user/:repo/:workflow", async (req, res
   await sendServiceBadge(req, res, () => fetchGithubWorkflowStatus(user, repo, workflow));
 });
 
+app.get("/github/commit-activity/:interval/:user/:repo", async (req, res) => {
+  const { interval, user, repo } = req.params;
+  const branch = String(req.query.branch ?? "").trim() || undefined;
+  await sendServiceBadge(req, res, async () => {
+    const data = await fetchGithubCommitActivity(user, repo, interval, branch);
+    const count = formatMetric(data.count);
+    return { ...data, message: data.unit ? `${count}/${data.unit}` : count };
+  });
+});
+
+app.get("/github/languages/top/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, () => fetchGithubTopLanguage(user, repo));
+});
+
+app.get("/github/hacktoberfest/:year/:user/:repo", async (req, res) => {
+  const { year, user, repo } = req.params;
+  const label = String(req.query.suggestion_label ?? "").trim() || undefined;
+  await sendServiceBadge(req, res, () => fetchGithubHacktoberfest(user, repo, year, label));
+});
+
+app.get("/endpoint", async (req, res) => {
+  await sendServiceBadge(req, res, () => fetchEndpointBadge(req.query.url));
+});
+
 app.get("/website", async (req, res) => {
   const upMessage = String(req.query.upMessage ?? "up").trim() || "up";
   const downMessage = String(req.query.downMessage ?? "down").trim() || "down";
   await sendServiceBadge(req, res, () =>
     fetchWebsiteStatus(req.query.url, { upMessage, downMessage })
   );
+});
+
+function npmDownloadsBadge(data) {
+  return { ...data, message: `${formatMetric(data.count)}/${data.unit}` };
+}
+
+app.get("/npm/:interval(dw|dm|dy)/@:scope/:pkg", async (req, res) => {
+  const pkg = `@${req.params.scope}/${req.params.pkg}`;
+  await sendServiceBadge(req, res, async () => npmDownloadsBadge(await fetchNpmDownloads(pkg, req.params.interval)));
+});
+
+app.get("/npm/:interval(dw|dm|dy)/:pkg", async (req, res) => {
+  const { interval, pkg } = req.params;
+  await sendServiceBadge(req, res, async () => npmDownloadsBadge(await fetchNpmDownloads(pkg, interval)));
 });
 
 app.get("/npm/v/@:scope/:pkg", async (req, res) => {
