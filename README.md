@@ -39,6 +39,8 @@ Live GitHub / npm:
 - contributors: ![gh contributors](https://terminal-shields.vercel.app/github/contributors/badges/shields)
 - open issues: ![gh issues](https://terminal-shields.vercel.app/github/issues/badges/shields)
 - open PRs: ![gh PRs](https://terminal-shields.vercel.app/github/issues-pr/badges/shields)
+- draft PRs: ![gh draft PRs](https://terminal-shields.vercel.app/github/issues-pr/badges/shields?draft=true)
+- branches: ![gh branches](https://terminal-shields.vercel.app/github/branches/badges/shields)
 - repo size: ![gh repo size](https://terminal-shields.vercel.app/github/repo-size/badges/shields)
 - latest release: ![gh release](https://terminal-shields.vercel.app/github/v/release/badges/shields)
 - Actions build: ![gh workflow](https://terminal-shields.vercel.app/github/actions/workflow/status/badges/shields/deploy-docs.yml)
@@ -49,7 +51,13 @@ Live GitHub / npm:
 - npm package: ![npm](https://terminal-shields.vercel.app/npm/v/express)
 - scoped npm: ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
 - npm downloads: ![npm downloads](https://terminal-shields.vercel.app/npm/dm/express)
+- npm license: ![npm license](https://terminal-shields.vercel.app/npm/l/express)
+- PyPI package: ![pypi](https://terminal-shields.vercel.app/pypi/v/requests)
+- PyPI downloads: ![pypi downloads](https://terminal-shields.vercel.app/pypi/dm/requests)
+- Docker pulls: ![docker pulls](https://terminal-shields.vercel.app/docker/pulls/_/alpine)
+- Docker last updated: ![docker last updated](https://terminal-shields.vercel.app/docker/last-updated/_/alpine)
 - custom JSON endpoint: ![endpoint](https://terminal-shields.vercel.app/endpoint?url=https%3A%2F%2Fshields.redsparr0w.com%2F2473%2Fmonday)
+- dynamic JSON: ![dynamic json](https://terminal-shields.vercel.app/badge/dynamic/json?url=https%3A%2F%2Fregistry.npmjs.org%2Fexpress%2Flatest&query=%24.version&label=express&prefix=v)
 
 ## Themes
 
@@ -142,7 +150,8 @@ https://terminal-shields.vercel.app/github/forks/:user/:repo
 https://terminal-shields.vercel.app/github/watchers/:user/:repo
 https://terminal-shields.vercel.app/github/contributors/:user/:repo
 https://terminal-shields.vercel.app/github/issues/:user/:repo
-https://terminal-shields.vercel.app/github/issues-pr/:user/:repo
+https://terminal-shields.vercel.app/github/issues-pr/:user/:repo?draft=true
+https://terminal-shields.vercel.app/github/branches/:user/:repo
 https://terminal-shields.vercel.app/github/repo-size/:user/:repo
 https://terminal-shields.vercel.app/github/v/release/:user/:repo
 https://terminal-shields.vercel.app/github/actions/workflow/status/:user/:repo/:workflow
@@ -154,7 +163,13 @@ https://terminal-shields.vercel.app/npm/v/:package
 https://terminal-shields.vercel.app/npm/v/@:scope/:package
 https://terminal-shields.vercel.app/npm/v/:package/:tag
 https://terminal-shields.vercel.app/npm/:interval/:package
+https://terminal-shields.vercel.app/npm/l/:package
+https://terminal-shields.vercel.app/pypi/v/:package
+https://terminal-shields.vercel.app/pypi/:interval/:package
+https://terminal-shields.vercel.app/docker/pulls/:user/:repo
+https://terminal-shields.vercel.app/docker/last-updated/:user/:repo/:tag?
 https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
+https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/data.json&query=$.version
 ```
 
 ```markdown
@@ -166,6 +181,7 @@ https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
 ![contributors](https://terminal-shields.vercel.app/github/contributors/USER/REPO)
 ![issues](https://terminal-shields.vercel.app/github/issues/USER/REPO)
 ![PRs](https://terminal-shields.vercel.app/github/issues-pr/USER/REPO)
+![branches](https://terminal-shields.vercel.app/github/branches/USER/REPO)
 ![repo size](https://terminal-shields.vercel.app/github/repo-size/USER/REPO)
 ![release](https://terminal-shields.vercel.app/github/v/release/USER/REPO)
 ![build](https://terminal-shields.vercel.app/github/actions/workflow/status/USER/REPO/ci.yml)
@@ -176,18 +192,28 @@ https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
 ![npm](https://terminal-shields.vercel.app/npm/v/express)
 ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
 ![downloads](https://terminal-shields.vercel.app/npm/dm/express)
+![npm license](https://terminal-shields.vercel.app/npm/l/express)
+![pypi](https://terminal-shields.vercel.app/pypi/v/requests)
+![docker pulls](https://terminal-shields.vercel.app/docker/pulls/_/alpine)
 ![custom](https://terminal-shields.vercel.app/endpoint?url=https%3A%2F%2Fexample.com%2Fbadge.json)
+![dynamic](https://terminal-shields.vercel.app/badge/dynamic/json?url=https%3A%2F%2Fexample.com%2Fdata.json&query=%24.version)
 ```
 
 `github/last-commit` reports the tip commit's age the way GitHub itself phrases it: `today`, `yesterday`, `last sunday` (2–6 days back), then `N weeks/months/years ago`. `?branch=` picks a branch other than the default.
 
-`github/watchers` reports subscriber count (GitHub's "Watch" button, not stargazers). `github/contributors` counts non-anonymous contributors. `github/issues`/`issues-pr` are open counts (green at zero, yellow otherwise). `github/v/release` reads the latest GitHub Release, falling back to the newest tag if the repo has no releases. `github/actions/workflow/status` takes the workflow file name (e.g. `ci.yml`) and colors by the most recent run's conclusion.
+`github/watchers` reports subscriber count (GitHub's "Watch" button, not stargazers). `github/contributors` counts non-anonymous contributors. `github/issues`/`issues-pr` are open counts (green at zero, yellow otherwise); `issues-pr?draft=true` counts only draft PRs (`draft PRs`), `?draft=false` only ready ones. `github/branches` counts branches. `github/v/release` reads the latest GitHub Release, falling back to the newest tag if the repo has no releases. `github/actions/workflow/status` takes the workflow file name (e.g. `ci.yml`) and colors by the most recent run's conclusion.
 
 `github/commit-activity` counts commits in the last week / month / year (`w` / `m` / `y`) or all time (`t`), e.g. `58/month`. `?branch=` picks a branch other than the default. `github/languages/top` shows the repo's largest language and its share of bytes (`javascript: 99.8%`).
 
 `github/hacktoberfest/:year` follows the October event (UTC): before it starts it counts down (`3 days to go`), during October it shows PRs opened that month plus days left, and afterwards `is over! (N PRs)`. Open issues carrying the `?suggestion_label=` label (default `hacktoberfest`) are listed before and during the event.
 
 `npm/dw`, `npm/dm`, `npm/dy` show weekly / monthly / yearly downloads (`475M/month`). Scoped packages work too: `/npm/dm/@babel/core`.
+
+`npm/l` reads the latest version's license. SPDX expressions (`(MIT OR Apache-2.0)`) and legacy multi-license manifests (`MIT, GPL-2.0`) are both shown; copyleft-only licenses are orange, everything else green.
+
+`pypi/v` shows the latest PyPI release; `pypi/dd`, `pypi/dw`, `pypi/dm` show daily / weekly / monthly downloads from [pypistats](https://pypistats.org).
+
+`docker/pulls` and `docker/last-updated` read Docker Hub; use `_` as the user for official images (`/docker/pulls/_/alpine`). `last-updated` shows the newest push across all tags, or one tag's push when you append it (`/docker/last-updated/_/alpine/latest`).
 
 `endpoint` renders any JSON that follows the [Shields endpoint schema](https://shields.io/badges/endpoint-badge), so you can badge whatever data you host:
 
@@ -196,6 +222,8 @@ https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
 ```
 
 `label`, `color`, `namedLogo` (a Simple Icons slug), `isError` and `cacheSeconds` (300s minimum) are honored; `?theme=`, `?bg=`, `?logo=`, `?color=` still override.
+
+`badge/dynamic/json` fetches any JSON and picks a value with [JSONPath](https://github.com/JSONPath-Plus/JSONPath) (`?query=$.version`); multiple matches are joined with `, `. `?label=`, `?prefix=`, `?suffix=` and the usual `?color=`/`?theme=` apply. Like Shields, script expressions (`?()`) are disabled.
 
 `website` pings the given `url` and renders `up` (green) or `down` (red) — pass `?upMessage=` / `?downMessage=` to relabel either state. It's the "live demo" badge.
 

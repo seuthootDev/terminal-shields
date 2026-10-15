@@ -85,8 +85,17 @@ async function searchIssueCount(user, repo, qualifiers) {
   return Number(data.total_count ?? 0);
 }
 
-function fetchOpenIssueCount(user, repo, kind) {
-  return searchIssueCount(user, repo, [`type:${kind}`, "state:open"]);
+function fetchOpenIssueCount(user, repo, kind, extra = []) {
+  return searchIssueCount(user, repo, [`type:${kind}`, "state:open", ...extra]);
+}
+
+/** `?draft=` for PR counts: true -> drafts only, false -> ready only, unset -> all. */
+export function parseDraftFilter(raw) {
+  const value = String(raw ?? "").trim().toLowerCase();
+  if (!value) return undefined;
+  if (value === "true" || value === "1") return true;
+  if (value === "false" || value === "0") return false;
+  throw new Error("draft must be true or false");
 }
 
 export async function fetchGithubIssues(user, repo) {
@@ -98,10 +107,11 @@ export async function fetchGithubIssues(user, repo) {
   };
 }
 
-export async function fetchGithubIssuesPr(user, repo) {
-  const count = await fetchOpenIssueCount(user, repo, "pr");
+export async function fetchGithubIssuesPr(user, repo, draft) {
+  const extra = draft === undefined ? [] : [`draft:${draft}`];
+  const count = await fetchOpenIssueCount(user, repo, "pr", extra);
   return {
-    label: "PRs",
+    label: draft === undefined ? "PRs" : draft ? "draft PRs" : "ready PRs",
     message: String(count),
     color: count > 0 ? "yellow" : "brightgreen"
   };
@@ -126,6 +136,24 @@ export async function fetchGithubContributors(user, repo) {
   const count = countFromLastPageLink(res.headers.get("link"), data.length);
   return {
     label: "contributors",
+    message: String(count),
+    color: "blue"
+  };
+}
+
+export async function fetchGithubBranches(user, repo) {
+  const url = `${GITHUB_API}/repos/${encodeURIComponent(user)}/${encodeURIComponent(repo)}/branches?per_page=1`;
+  const res = await fetch(url, { headers: githubHeaders() });
+  if (res.status === 404) {
+    throw new Error("repo not found");
+  }
+  if (!res.ok) {
+    throw new Error(`GitHub API ${res.status}`);
+  }
+  const data = await res.json();
+  const count = countFromLastPageLink(res.headers.get("link"), data.length);
+  return {
+    label: "branches",
     message: String(count),
     color: "blue"
   };

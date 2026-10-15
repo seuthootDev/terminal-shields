@@ -1,9 +1,12 @@
 import express from "express";
 
 import { inferTheme, toSvgColor } from "./colors.js";
+import { fetchDockerLastUpdated, fetchDockerPulls } from "./docker.js";
+import { fetchDynamicJsonBadge } from "./dynamic.js";
 import { fetchEndpointBadge } from "./endpoint.js";
 import { formatMetric } from "./format.js";
 import {
+  fetchGithubBranches,
   fetchGithubCommitActivity,
   fetchGithubContributors,
   fetchGithubForks,
@@ -17,12 +20,14 @@ import {
   fetchGithubStars,
   fetchGithubTopLanguage,
   fetchGithubWatchers,
-  fetchGithubWorkflowStatus
+  fetchGithubWorkflowStatus,
+  parseDraftFilter
 } from "./github.js";
 import { homePageHtml } from "./homePage.js";
 import { fetchLogoPath } from "./logo.js";
-import { fetchNpmDownloads, fetchNpmVersion } from "./npm.js";
+import { fetchNpmDownloads, fetchNpmLicense, fetchNpmVersion } from "./npm.js";
 import { parseBadgePath } from "./parse.js";
+import { fetchPypiDownloads, fetchPypiVersion } from "./pypi.js";
 import { renderBadge } from "./render.js";
 import { resolveTheme } from "./themes.js";
 import { fetchWebsiteStatus } from "./website.js";
@@ -121,6 +126,14 @@ app.get(["/static/v1", "/static"], async (req, res) => {
   });
 });
 
+app.get("/badge/dynamic/json", async (req, res) => {
+  const { url, query, prefix, suffix } = req.query;
+  const label = req.query.label == null ? undefined : String(req.query.label);
+  await sendServiceBadge(req, res, () =>
+    fetchDynamicJsonBadge({ url, query, label, prefix: String(prefix ?? ""), suffix: String(suffix ?? "") })
+  );
+});
+
 app.get(/^\/badge\/(.+)$/, async (req, res) => {
   try {
     const parsed = parseBadgePath(req.params[0]);
@@ -189,7 +202,12 @@ app.get("/github/issues/:user/:repo", async (req, res) => {
 
 app.get("/github/issues-pr/:user/:repo", async (req, res) => {
   const { user, repo } = req.params;
-  await sendServiceBadge(req, res, () => fetchGithubIssuesPr(user, repo));
+  await sendServiceBadge(req, res, () => fetchGithubIssuesPr(user, repo, parseDraftFilter(req.query.draft)));
+});
+
+app.get("/github/branches/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, () => fetchGithubBranches(user, repo));
 });
 
 app.get("/github/repo-size/:user/:repo", async (req, res) => {
@@ -240,18 +258,27 @@ app.get("/website", async (req, res) => {
   );
 });
 
-function npmDownloadsBadge(data) {
+function downloadsBadge(data) {
   return { ...data, message: `${formatMetric(data.count)}/${data.unit}` };
 }
 
 app.get("/npm/:interval(dw|dm|dy)/@:scope/:pkg", async (req, res) => {
   const pkg = `@${req.params.scope}/${req.params.pkg}`;
-  await sendServiceBadge(req, res, async () => npmDownloadsBadge(await fetchNpmDownloads(pkg, req.params.interval)));
+  await sendServiceBadge(req, res, async () => downloadsBadge(await fetchNpmDownloads(pkg, req.params.interval)));
 });
 
 app.get("/npm/:interval(dw|dm|dy)/:pkg", async (req, res) => {
   const { interval, pkg } = req.params;
-  await sendServiceBadge(req, res, async () => npmDownloadsBadge(await fetchNpmDownloads(pkg, interval)));
+  await sendServiceBadge(req, res, async () => downloadsBadge(await fetchNpmDownloads(pkg, interval)));
+});
+
+app.get("/npm/l/@:scope/:pkg", async (req, res) => {
+  const pkg = `@${req.params.scope}/${req.params.pkg}`;
+  await sendServiceBadge(req, res, () => fetchNpmLicense(pkg));
+});
+
+app.get("/npm/l/:pkg", async (req, res) => {
+  await sendServiceBadge(req, res, () => fetchNpmLicense(req.params.pkg));
 });
 
 app.get("/npm/v/@:scope/:pkg", async (req, res) => {
@@ -264,6 +291,28 @@ app.get("/npm/v/:pkg/:tag?", async (req, res) => {
   const pkg = req.params.pkg;
   const tag = String(req.params.tag ?? req.query.tag ?? "latest").trim() || "latest";
   await sendServiceBadge(req, res, () => fetchNpmVersion(pkg, tag));
+});
+
+app.get("/pypi/v/:pkg", async (req, res) => {
+  await sendServiceBadge(req, res, () => fetchPypiVersion(req.params.pkg));
+});
+
+app.get("/pypi/:interval(dd|dw|dm)/:pkg", async (req, res) => {
+  const { interval, pkg } = req.params;
+  await sendServiceBadge(req, res, async () => downloadsBadge(await fetchPypiDownloads(pkg, interval)));
+});
+
+app.get("/docker/pulls/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, async () => {
+    const data = await fetchDockerPulls(user, repo);
+    return { ...data, message: formatMetric(data.count) };
+  });
+});
+
+app.get("/docker/last-updated/:user/:repo/:tag?", async (req, res) => {
+  const { user, repo, tag } = req.params;
+  await sendServiceBadge(req, res, () => fetchDockerLastUpdated(user, repo, tag));
 });
 
 app.get("/", async (req, res) => {
