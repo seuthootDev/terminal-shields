@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { queryJson } from "./dynamic.js";
 import { parseEndpointPayload } from "./endpoint.js";
-import { hacktoberfestMessage, hacktoberfestPhase, topLanguage } from "./github.js";
+import { hacktoberfestMessage, hacktoberfestPhase, parseDraftFilter, topLanguage } from "./github.js";
+import { licenseColor, npmLicenses } from "./npm.js";
 
 test("hacktoberfest phase before, during, after October (UTC)", () => {
   assert.deepEqual(hacktoberfestPhase(2026, new Date("2026-09-28T12:00:00Z")), { phase: "before", days: 3 });
@@ -44,4 +46,43 @@ test("endpoint payload rejects bad input", () => {
   assert.throws(() => parseEndpointPayload({ schemaVersion: 1 }), /message required/);
   assert.throws(() => parseEndpointPayload({ schemaVersion: 1, message: "x", label: {} }), /label/);
   assert.throws(() => parseEndpointPayload([]), /invalid/);
+});
+
+test("draft filter parses true/false/unset", () => {
+  assert.equal(parseDraftFilter(undefined), undefined);
+  assert.equal(parseDraftFilter(""), undefined);
+  assert.equal(parseDraftFilter("true"), true);
+  assert.equal(parseDraftFilter("FALSE"), false);
+  assert.throws(() => parseDraftFilter("maybe"), /draft must be/);
+});
+
+test("npm licenses from every manifest shape", () => {
+  assert.deepEqual(npmLicenses({ license: "MIT" }), ["MIT"]);
+  assert.deepEqual(npmLicenses({ license: "(MIT OR Apache-2.0)" }), ["(MIT OR Apache-2.0)"]);
+  assert.deepEqual(npmLicenses({ license: { type: "ISC" } }), ["ISC"]);
+  assert.deepEqual(npmLicenses({ licenses: [{ type: "MIT" }, { type: "GPL-2.0" }] }), ["MIT", "GPL-2.0"]);
+  assert.deepEqual(npmLicenses({}), []);
+});
+
+test("license color: copyleft orange, permissive green, none grey", () => {
+  assert.equal(licenseColor(["MIT"]), "green");
+  assert.equal(licenseColor(["GPL-3.0-only"]), "orange");
+  assert.equal(licenseColor(["(GPL-2.0 OR MIT)"]), "green");
+  assert.equal(licenseColor(["LGPL-2.1", "MPL-2.0"]), "orange");
+  assert.equal(licenseColor([]), "lightgrey");
+});
+
+test("dynamic json query joins matches", () => {
+  const doc = { name: "x", version: "1.2.3", tags: ["a", "b"], nested: { n: 0 } };
+  assert.equal(queryJson(doc, "$.version"), "1.2.3");
+  assert.equal(queryJson(doc, "$.tags[*]"), "a, b");
+  assert.equal(queryJson(doc, "$.nested.n"), "0");
+  assert.equal(queryJson(doc, "$.nested"), '{"n":0}');
+  assert.throws(() => queryJson(doc, "$.missing"), /no result/);
+  assert.throws(() => queryJson(doc, ""), /query required/);
+});
+
+test("dynamic json query refuses script expressions", () => {
+  const doc = { items: [{ v: 1 }, { v: 2 }] };
+  assert.throws(() => queryJson(doc, "$.items[?(@.v > 1)]"));
 });

@@ -53,7 +53,8 @@ export function parseEndpointPayload(json) {
   return result;
 }
 
-export async function fetchEndpointBadge(rawUrl) {
+/** Fetch a remote JSON document with a timeout and a body-size cap. */
+export async function fetchJsonDocument(rawUrl, name = "endpoint") {
   const url = normalizeUrl(rawUrl);
   let res;
   try {
@@ -62,17 +63,19 @@ export async function fetchEndpointBadge(rawUrl) {
       signal: AbortSignal.timeout(5000)
     });
   } catch {
-    throw new Error("endpoint unreachable");
+    throw new Error(`${name} unreachable`);
   }
-  if (!res.ok) throw new Error(`endpoint ${res.status}`);
+  if (!res.ok) throw new Error(`${name} ${res.status}`);
 
   const text = await res.text();
-  if (text.length > MAX_BODY_BYTES) throw new Error("endpoint response too large");
-  let json;
+  if (text.length > MAX_BODY_BYTES) throw new Error(`${name} response too large`);
   try {
-    json = JSON.parse(text);
+    return JSON.parse(text);
   } catch {
-    throw new Error("endpoint did not return json");
+    throw new Error(`${name} did not return json`);
   }
-  return parseEndpointPayload(json);
+}
+
+export async function fetchEndpointBadge(rawUrl) {
+  return parseEndpointPayload(await fetchJsonDocument(rawUrl));
 }
