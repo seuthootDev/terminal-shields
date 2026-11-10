@@ -40,13 +40,16 @@ Live GitHub / npm:
 - open issues: ![gh issues](https://terminal-shields.vercel.app/github/issues/badges/shields)
 - open PRs: ![gh PRs](https://terminal-shields.vercel.app/github/issues-pr/badges/shields)
 - draft PRs: ![gh draft PRs](https://terminal-shields.vercel.app/github/issues-pr/badges/shields?draft=true)
+- PR state: ![gh PR state](https://terminal-shields.vercel.app/github/pulls/detail/state/badges/shields/12232)
+- issue state: ![gh issue state](https://terminal-shields.vercel.app/github/issues/detail/state/badges/shields/979)
 - branches: ![gh branches](https://terminal-shields.vercel.app/github/branches/badges/shields)
 - repo size: ![gh repo size](https://terminal-shields.vercel.app/github/repo-size/badges/shields)
 - latest release: ![gh release](https://terminal-shields.vercel.app/github/v/release/badges/shields)
 - Actions build: ![gh workflow](https://terminal-shields.vercel.app/github/actions/workflow/status/badges/shields/deploy-docs.yml)
 - commit activity: ![gh commit activity](https://terminal-shields.vercel.app/github/commit-activity/m/badges/shields)
 - top language: ![gh top language](https://terminal-shields.vercel.app/github/languages/top/badges/shields)
-- Hacktoberfest: ![hacktoberfest](https://terminal-shields.vercel.app/github/hacktoberfest/2026/badges/shields?suggestion_label=good%20first%20issue)
+- Hacktoberfest: ![hacktoberfest](https://terminal-shields.vercel.app/github/hacktoberfest/2026/badges/shields?suggestion_label=hacktoberfest)
+- WakaTime repo time: ![wakatime](https://terminal-shields.vercel.app/wakatime/github/wakatime/sublime-wakatime)
 - live demo: ![live demo](https://terminal-shields.vercel.app/website?url=https%3A%2F%2Fterminal-shields.vercel.app)
 - npm package: ![npm](https://terminal-shields.vercel.app/npm/v/express)
 - scoped npm: ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
@@ -151,13 +154,17 @@ https://terminal-shields.vercel.app/github/watchers/:user/:repo
 https://terminal-shields.vercel.app/github/contributors/:user/:repo
 https://terminal-shields.vercel.app/github/issues/:user/:repo
 https://terminal-shields.vercel.app/github/issues-pr/:user/:repo?draft=true
+https://terminal-shields.vercel.app/github/:kind/detail/state/:user/:repo/:number
 https://terminal-shields.vercel.app/github/branches/:user/:repo
 https://terminal-shields.vercel.app/github/repo-size/:user/:repo
 https://terminal-shields.vercel.app/github/v/release/:user/:repo
 https://terminal-shields.vercel.app/github/actions/workflow/status/:user/:repo/:workflow
 https://terminal-shields.vercel.app/github/commit-activity/:interval/:user/:repo?branch=main
 https://terminal-shields.vercel.app/github/languages/top/:user/:repo
-https://terminal-shields.vercel.app/github/hacktoberfest/:year/:user/:repo?suggestion_label=good%20first%20issue
+https://terminal-shields.vercel.app/github/hacktoberfest/:year/:user/:repo?suggestion_label=hacktoberfest
+https://terminal-shields.vercel.app/wakatime/user/:user
+https://terminal-shields.vercel.app/wakatime/user/:user/project/:project
+https://terminal-shields.vercel.app/wakatime/github/:owner/:repo
 https://terminal-shields.vercel.app/website?url=https://example.com
 https://terminal-shields.vercel.app/npm/v/:package
 https://terminal-shields.vercel.app/npm/v/@:scope/:package
@@ -181,6 +188,7 @@ https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/d
 ![contributors](https://terminal-shields.vercel.app/github/contributors/USER/REPO)
 ![issues](https://terminal-shields.vercel.app/github/issues/USER/REPO)
 ![PRs](https://terminal-shields.vercel.app/github/issues-pr/USER/REPO)
+![PR state](https://terminal-shields.vercel.app/github/pulls/detail/state/USER/REPO/1)
 ![branches](https://terminal-shields.vercel.app/github/branches/USER/REPO)
 ![repo size](https://terminal-shields.vercel.app/github/repo-size/USER/REPO)
 ![release](https://terminal-shields.vercel.app/github/v/release/USER/REPO)
@@ -188,6 +196,7 @@ https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/d
 ![commit activity](https://terminal-shields.vercel.app/github/commit-activity/m/USER/REPO)
 ![top language](https://terminal-shields.vercel.app/github/languages/top/USER/REPO)
 ![hacktoberfest](https://terminal-shields.vercel.app/github/hacktoberfest/2026/USER/REPO)
+![wakatime](https://terminal-shields.vercel.app/wakatime/github/USER/REPO)
 ![live demo](https://terminal-shields.vercel.app/website?url=https%3A%2F%2Fyour-demo.example.com)
 ![npm](https://terminal-shields.vercel.app/npm/v/express)
 ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
@@ -201,11 +210,13 @@ https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/d
 
 `github/last-commit` reports the tip commit's age the way GitHub itself phrases it: `today`, `yesterday`, `last sunday` (2–6 days back), then `N weeks/months/years ago`. `?branch=` picks a branch other than the default.
 
-`github/watchers` reports subscriber count (GitHub's "Watch" button, not stargazers). `github/contributors` counts non-anonymous contributors. `github/issues`/`issues-pr` are open counts (green at zero, yellow otherwise); `issues-pr?draft=true` counts only draft PRs (`draft PRs`), `?draft=false` only ready ones. `github/branches` counts branches. `github/v/release` reads the latest GitHub Release, falling back to the newest tag if the repo has no releases. `github/actions/workflow/status` takes the workflow file name (e.g. `ci.yml`) and colors by the most recent run's conclusion.
+`github/watchers` reports subscriber count (GitHub's "Watch" button, not stargazers). `github/contributors` counts non-anonymous contributors. `github/issues`/`issues-pr` are open counts (green at zero, yellow otherwise); `issues-pr?draft=true` counts only draft PRs (`draft PRs`), `?draft=false` only ready ones. `github/pulls/detail/state/:user/:repo/:number` (or `issues/…`) shows one PR or issue's state like Shields: draft PRs read `draft` (grey) even though GitHub reports them as open; closed PRs are `merged` or `rejected`; issues closed as not planned or duplicate say so. `github/branches` counts branches. `github/v/release` reads the latest GitHub Release, falling back to the newest tag if the repo has no releases. `github/actions/workflow/status` takes the workflow file name (e.g. `ci.yml`) and colors by the most recent run's conclusion.
 
 `github/commit-activity` counts commits in the last week / month / year (`w` / `m` / `y`) or all time (`t`), e.g. `58/month`. `?branch=` picks a branch other than the default. `github/languages/top` shows the repo's largest language and its share of bytes (`javascript: 99.8%`).
 
 `github/hacktoberfest/:year` follows the October event (UTC): before it starts it counts down (`3 days to go`), during October it shows PRs opened that month plus days left, and afterwards `is over! (N PRs)`. Open issues carrying the `?suggestion_label=` label (default `hacktoberfest`) are listed before and during the event.
+
+`wakatime/*` reads coding time from WakaTime's public badges, no API key needed. Take the user id (a UUID, not your username) from the badge snippet on your WakaTime profile, and project ids from "Project Badges" at [wakatime.com/share](https://wakatime.com/share); `wakatime/github/:owner/:repo` works for repos with WakaTime "Repo Badges" enabled.
 
 `npm/dw`, `npm/dm`, `npm/dy` show weekly / monthly / yearly downloads (`475M/month`). Scoped packages work too: `/npm/dm/@babel/core`.
 

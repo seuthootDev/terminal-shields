@@ -117,6 +117,52 @@ export async function fetchGithubIssuesPr(user, repo, draft) {
   };
 }
 
+const ISSUE_STATE_COLORS = {
+  open: "2cbe4e",
+  closed: "6f42c1",
+  "not planned": "666c76",
+  duplicate: "666c76"
+};
+
+/**
+ * Shields' issue/PR detail state: draft PRs read `draft` (GitHub reports them as
+ * `open`), closed PRs split into merged/rejected, and issues closed as not planned
+ * or duplicate say so.
+ */
+export function issueDetailState(json, kind, number) {
+  const isPR = "pull_request" in json || kind === "pulls";
+  const label = `${isPR ? "pull request" : "issue"} ${number}`;
+  const state =
+    json.state_reason === "not_planned" || json.state_reason === "duplicate"
+      ? json.state_reason.replace("_", " ")
+      : json.state;
+  const merged = (json.pull_request?.merged_at ?? json.merged_at) != null;
+  const draft = Boolean(json.pull_request?.draft ?? json.draft);
+
+  if (isPR && draft && state === "open") return { label, message: "draft", color: "gray" };
+  if (!isPR || state === "open") return { label, message: state, color: ISSUE_STATE_COLORS[state] ?? "lightgrey" };
+  if (merged) return { label, message: "merged", color: "8a2be2" };
+  return { label, message: "rejected", color: "red" };
+}
+
+export async function fetchGithubIssueState(user, repo, kind, number) {
+  if (kind !== "issues" && kind !== "pulls") {
+    throw new Error("kind must be issues or pulls");
+  }
+  if (!/^\d+$/.test(String(number))) {
+    throw new Error("invalid number");
+  }
+  const url = `${GITHUB_API}/repos/${encodeURIComponent(user)}/${encodeURIComponent(repo)}/${kind}/${number}`;
+  const res = await fetch(url, { headers: githubHeaders() });
+  if (res.status === 404 || res.status === 422) {
+    throw new Error("issue, pull request or repo not found");
+  }
+  if (!res.ok) {
+    throw new Error(`GitHub API ${res.status}`);
+  }
+  return issueDetailState(await res.json(), kind, number);
+}
+
 function countFromLastPageLink(linkHeader, fallback) {
   const lastLink = linkHeader?.split(",").find((part) => /rel="last"/.test(part));
   const match = lastLink?.match(/[?&]page=(\d+)/);
