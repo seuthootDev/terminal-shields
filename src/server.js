@@ -12,6 +12,7 @@ import {
   fetchGithubForks,
   fetchGithubHacktoberfest,
   fetchGithubIssues,
+  fetchGithubIssueState,
   fetchGithubIssuesPr,
   fetchGithubLastCommit,
   fetchGithubLicense,
@@ -30,6 +31,7 @@ import { parseBadgePath } from "./parse.js";
 import { fetchPypiDownloads, fetchPypiVersion } from "./pypi.js";
 import { renderBadge } from "./render.js";
 import { resolveTheme } from "./themes.js";
+import { fetchWakatimeRepo, fetchWakatimeUser, fetchWakatimeUserProject } from "./wakatime.js";
 import { fetchWebsiteStatus } from "./website.js";
 
 const app = express();
@@ -205,6 +207,11 @@ app.get("/github/issues-pr/:user/:repo", async (req, res) => {
   await sendServiceBadge(req, res, () => fetchGithubIssuesPr(user, repo, parseDraftFilter(req.query.draft)));
 });
 
+app.get("/github/:kind(issues|pulls)/detail/state/:user/:repo/:number(\\d+)", async (req, res) => {
+  const { kind, user, repo, number } = req.params;
+  await sendServiceBadge(req, res, () => fetchGithubIssueState(user, repo, kind, number));
+});
+
 app.get("/github/branches/:user/:repo", async (req, res) => {
   const { user, repo } = req.params;
   await sendServiceBadge(req, res, () => fetchGithubBranches(user, repo));
@@ -244,6 +251,20 @@ app.get("/github/hacktoberfest/:year/:user/:repo", async (req, res) => {
   const { year, user, repo } = req.params;
   const label = String(req.query.suggestion_label ?? "").trim() || undefined;
   await sendServiceBadge(req, res, () => fetchGithubHacktoberfest(user, repo, year, label));
+});
+
+app.get("/wakatime/user/:user/project/:project", async (req, res) => {
+  const { user, project } = req.params;
+  await sendServiceBadge(req, res, () => fetchWakatimeUserProject(user, project));
+});
+
+app.get("/wakatime/user/:user", async (req, res) => {
+  await sendServiceBadge(req, res, () => fetchWakatimeUser(req.params.user));
+});
+
+app.get("/wakatime/github/:owner/:repo", async (req, res) => {
+  const { owner, repo } = req.params;
+  await sendServiceBadge(req, res, () => fetchWakatimeRepo(owner, repo));
 });
 
 app.get("/endpoint", async (req, res) => {
