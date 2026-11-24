@@ -268,7 +268,8 @@ app.get("/wakatime/github/:owner/:repo", async (req, res) => {
 });
 
 app.get("/endpoint", async (req, res) => {
-  await sendServiceBadge(req, res, () => fetchEndpointBadge(req.query.url));
+  const message = req.query.message == null ? undefined : String(req.query.message);
+  await sendServiceBadge(req, res, () => fetchEndpointBadge(req.query.url, { message }));
 });
 
 app.get("/website", async (req, res) => {

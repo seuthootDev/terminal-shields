@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { queryJson } from "./dynamic.js";
 import { parseEndpointPayload } from "./endpoint.js";
-import { hacktoberfestMessage, hacktoberfestPhase, issueDetailState, parseDraftFilter, topLanguage } from "./github.js";
+import { hacktoberfestMessage, hacktoberfestPhase, isContributorListTooLarge, issueDetailState, parseDraftFilter, topLanguage } from "./github.js";
 import { licenseColor, npmLicenses } from "./npm.js";
 import { parseWakatimeSvg } from "./wakatime.js";
 
@@ -47,6 +47,26 @@ test("endpoint payload rejects bad input", () => {
   assert.throws(() => parseEndpointPayload({ schemaVersion: 1 }), /message required/);
   assert.throws(() => parseEndpointPayload({ schemaVersion: 1, message: "x", label: {} }), /label/);
   assert.throws(() => parseEndpointPayload([]), /invalid/);
+});
+
+test("endpoint message override, except for isError payloads", () => {
+  const payload = { schemaVersion: 1, label: "hey", message: "yo" };
+  assert.equal(parseEndpointPayload(payload, { message: "custom" }).message, "custom");
+  assert.equal(parseEndpointPayload(payload, { message: "hello & world" }).message, "hello & world");
+  assert.equal(parseEndpointPayload(payload).message, "yo");
+  assert.equal(
+    parseEndpointPayload({ ...payload, message: "not right", isError: true }, { message: "custom" }).message,
+    "not right"
+  );
+  assert.throws(() => parseEndpointPayload({ schemaVersion: 1, label: "hey" }, { message: "custom" }), /message required/);
+  assert.throws(() => parseEndpointPayload(payload, { message: "" }), /invalid query parameter: message/);
+});
+
+test("contributor list too large is detected only on GitHub's 403 message", () => {
+  const body = '{"message":"The history or contributor list is too large to list contributors for this repository via the API."}';
+  assert.equal(isContributorListTooLarge(403, body), true);
+  assert.equal(isContributorListTooLarge(403, '{"message":"API rate limit exceeded"}'), false);
+  assert.equal(isContributorListTooLarge(500, body), false);
 });
 
 test("draft filter parses true/false/unset", () => {

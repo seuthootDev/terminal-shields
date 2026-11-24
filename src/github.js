@@ -169,11 +169,23 @@ function countFromLastPageLink(linkHeader, fallback) {
   return match ? Number(match[1]) : fallback;
 }
 
+/**
+ * GitHub answers 403 with this message when a repo's history is too large to
+ * list contributors (e.g. NixOS/nixpkgs). Shields #12248 renders it as
+ * `repository too large` instead of a generic error.
+ */
+export function isContributorListTooLarge(status, body) {
+  return status === 403 && /history or contributor list is too large/i.test(String(body ?? ""));
+}
+
 export async function fetchGithubContributors(user, repo) {
   const url = `${GITHUB_API}/repos/${encodeURIComponent(user)}/${encodeURIComponent(repo)}/contributors?per_page=1&anon=false`;
   const res = await fetch(url, { headers: githubHeaders() });
   if (res.status === 404) {
     throw new Error("repo not found");
+  }
+  if (res.status === 403 && isContributorListTooLarge(res.status, await res.text())) {
+    return { label: "contributors", message: "repository too large", color: "lightgrey" };
   }
   if (!res.ok) {
     throw new Error(`GitHub API ${res.status}`);

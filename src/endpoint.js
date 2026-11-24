@@ -20,8 +20,16 @@ function normalizeUrl(raw) {
   return parsed.toString();
 }
 
-/** Validate a Shields endpoint payload and map it to our badge fields. */
-export function parseEndpointPayload(json) {
+/**
+ * Validate a Shields endpoint payload and map it to our badge fields.
+ * `overrides.message` replaces the endpoint's message unless it reports isError
+ * (Shields #12235); an empty override is rejected.
+ */
+export function parseEndpointPayload(json, overrides = {}) {
+  const messageOverride = overrides.message;
+  if (messageOverride != null && !String(messageOverride).trim()) {
+    throw new Error("invalid query parameter: message");
+  }
   if (!json || typeof json !== "object" || Array.isArray(json)) {
     throw new Error("invalid endpoint json");
   }
@@ -38,7 +46,9 @@ export function parseEndpointPayload(json) {
 
   const result = {
     label: json.label == null ? "" : String(json.label),
-    message: String(json.message),
+    message: messageOverride != null && json.isError !== true
+      ? String(messageOverride)
+      : String(json.message),
     color: typeof json.color === "string" && json.color.trim()
       ? json.color.trim()
       : json.isError === true ? "red" : "lightgrey"
@@ -76,6 +86,10 @@ export async function fetchJsonDocument(rawUrl, name = "endpoint") {
   }
 }
 
-export async function fetchEndpointBadge(rawUrl) {
-  return parseEndpointPayload(await fetchJsonDocument(rawUrl));
+export async function fetchEndpointBadge(rawUrl, overrides = {}) {
+  const { message } = overrides;
+  if (message != null && !String(message).trim()) {
+    throw new Error("invalid query parameter: message");
+  }
+  return parseEndpointPayload(await fetchJsonDocument(rawUrl), overrides);
 }

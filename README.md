@@ -60,6 +60,7 @@ Live GitHub / npm:
 - Docker pulls: ![docker pulls](https://terminal-shields.vercel.app/docker/pulls/_/alpine)
 - Docker last updated: ![docker last updated](https://terminal-shields.vercel.app/docker/last-updated/_/alpine)
 - custom JSON endpoint: ![endpoint](https://terminal-shields.vercel.app/endpoint?url=https%3A%2F%2Fshields.redsparr0w.com%2F2473%2Fmonday)
+- endpoint with message override: ![endpoint override](https://terminal-shields.vercel.app/endpoint?url=https%3A%2F%2Fshields.redsparr0w.com%2F2473%2Fmonday&message=custom%20message)
 - dynamic JSON: ![dynamic json](https://terminal-shields.vercel.app/badge/dynamic/json?url=https%3A%2F%2Fregistry.npmjs.org%2Fexpress%2Flatest&query=%24.version&label=express&prefix=v)
 
 ## Themes
@@ -210,7 +211,7 @@ https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/d
 
 `github/last-commit` reports the tip commit's age the way GitHub itself phrases it: `today`, `yesterday`, `last sunday` (2–6 days back), then `N weeks/months/years ago`. `?branch=` picks a branch other than the default.
 
-`github/watchers` reports subscriber count (GitHub's "Watch" button, not stargazers). `github/contributors` counts non-anonymous contributors. `github/issues`/`issues-pr` are open counts (green at zero, yellow otherwise); `issues-pr?draft=true` counts only draft PRs (`draft PRs`), `?draft=false` only ready ones. `github/pulls/detail/state/:user/:repo/:number` (or `issues/…`) shows one PR or issue's state like Shields: draft PRs read `draft` (grey) even though GitHub reports them as open; closed PRs are `merged` or `rejected`; issues closed as not planned or duplicate say so. `github/branches` counts branches. `github/v/release` reads the latest GitHub Release, falling back to the newest tag if the repo has no releases. `github/actions/workflow/status` takes the workflow file name (e.g. `ci.yml`) and colors by the most recent run's conclusion.
+`github/watchers` reports subscriber count (GitHub's "Watch" button, not stargazers). `github/contributors` counts non-anonymous contributors; repos too large for GitHub to compute (e.g. NixOS/nixpkgs) show `repository too large` in grey. `github/issues`/`issues-pr` are open counts (green at zero, yellow otherwise); `issues-pr?draft=true` counts only draft PRs (`draft PRs`), `?draft=false` only ready ones. `github/pulls/detail/state/:user/:repo/:number` (or `issues/…`) shows one PR or issue's state like Shields: draft PRs read `draft` (grey) even though GitHub reports them as open; closed PRs are `merged` or `rejected`; issues closed as not planned or duplicate say so. `github/branches` counts branches. `github/v/release` reads the latest GitHub Release, falling back to the newest tag if the repo has no releases. `github/actions/workflow/status` takes the workflow file name (e.g. `ci.yml`) and colors by the most recent run's conclusion.
 
 `github/commit-activity` counts commits in the last week / month / year (`w` / `m` / `y`) or all time (`t`), e.g. `58/month`. `?branch=` picks a branch other than the default. `github/languages/top` shows the repo's largest language and its share of bytes (`javascript: 99.8%`).
 
@@ -232,7 +233,7 @@ https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/d
 { "schemaVersion": 1, "label": "hello", "message": "sweet world", "color": "orange" }
 ```
 
-`label`, `color`, `namedLogo` (a Simple Icons slug), `isError` and `cacheSeconds` (300s minimum) are honored; `?theme=`, `?bg=`, `?logo=`, `?color=` still override.
+`label`, `color`, `namedLogo` (a Simple Icons slug), `isError` and `cacheSeconds` (300s minimum) are honored; `?theme=`, `?bg=`, `?logo=`, `?color=` still override. `?message=` replaces the endpoint's message (URL-encode spaces and symbols) unless the payload sets `isError: true`; an empty `?message=` is rejected.
 
 `badge/dynamic/json` fetches any JSON and picks a value with [JSONPath](https://github.com/JSONPath-Plus/JSONPath) (`?query=$.version`); multiple matches are joined with `, `. `?label=`, `?prefix=`, `?suffix=` and the usual `?color=`/`?theme=` apply. Like Shields, script expressions (`?()`) are disabled.
 
