@@ -92,21 +92,3 @@ test("?label= overrides the label on a live service badge", async (t) => {
   const fallbackBody = await fallback.text();
   assert.match(fallbackBody, /\$ gem: v7\.1\.3/);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
