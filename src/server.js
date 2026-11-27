@@ -138,7 +138,7 @@ app.get(["/static/v1", "/static"], async (req, res) => {
     theme: pickTheme(req, color),
     bg: pickBg(req),
     logo: pickLogo(req),
-      logoColor: pickLogoColor(req),
+  logoColor: pickLogoColor(req),
     blink: parseBlink(req.query)
   });
 });
