@@ -261,6 +261,18 @@ npm run serve
 
 Open `http://127.0.0.1:8000` — same generator UI as production.
 
+## Contributing
+
+New badges are welcome, especially ones [Shields.io](https://shields.io) already has. Pick an open [`shields parity`](https://github.com/seuthootDev/terminal-shields/issues?q=is%3Aissue+is%3Aopen+label%3A%22shields+parity%22) or [`good first issue`](https://github.com/seuthootDev/terminal-shields/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) issue; each one says which files to touch. Run `npm test` before opening a PR.
+
+Not ready to code? That is fine too. Starring the repo or sharing a badge you made also helps other people find the project.
+
+### Contributors
+
+Thanks to everyone who has sent a fix or a badge:
+
+<a href="https://github.com/seuthootDev/terminal-shields/graphs/contributors"><img src="https://contrib.rocks/image?repo=seuthootDev/terminal-shields" alt="Contributors" /></a>
+
 ## License
 
 [MIT](./LICENSE) © seuthootDev
