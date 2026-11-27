@@ -62,6 +62,23 @@ export async function fetchGithubWatchers(user, repo) {
   };
 }
 
+export async function fetchGithubFollowers(user) {
+  const url = `${GITHUB_API}/users/${encodeURIComponent(user)}`;
+  const res = await fetch(url, { headers: githubHeaders() });
+  if (res.status === 404) {
+    throw new Error("user not found");
+  }
+  if (!res.ok) {
+    throw new Error(`GitHub API ${res.status}`);
+  }
+  const data = await res.json();
+  return {
+    label: "followers",
+    message: String(data.followers ?? 0),
+    color: "grey"
+  };
+}
+
 export async function fetchGithubRepoSize(user, repo) {
   const data = await fetchRepo(user, repo);
   return {

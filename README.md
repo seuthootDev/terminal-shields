@@ -36,6 +36,7 @@ Live GitHub / npm:
 - last commit: ![gh last commit](https://terminal-shields.vercel.app/github/last-commit/badges/shields)
 - forks: ![gh forks](https://terminal-shields.vercel.app/github/forks/badges/shields)
 - watchers: ![gh watchers](https://terminal-shields.vercel.app/github/watchers/badges/shields)
+- followers: ![gh followers](https://terminal-shields.vercel.app/github/followers/badges/shields)
 - contributors: ![gh contributors](https://terminal-shields.vercel.app/github/contributors/badges/shields)
 - open issues: ![gh issues](https://terminal-shields.vercel.app/github/issues/badges/shields)
 - open PRs: ![gh PRs](https://terminal-shields.vercel.app/github/issues-pr/badges/shields)
@@ -152,6 +153,7 @@ https://terminal-shields.vercel.app/github/license/:user/:repo
 https://terminal-shields.vercel.app/github/last-commit/:user/:repo?branch=main
 https://terminal-shields.vercel.app/github/forks/:user/:repo
 https://terminal-shields.vercel.app/github/watchers/:user/:repo
+https://terminal-shields.vercel.app/github/followers/:user
 https://terminal-shields.vercel.app/github/contributors/:user/:repo
 https://terminal-shields.vercel.app/github/issues/:user/:repo
 https://terminal-shields.vercel.app/github/issues-pr/:user/:repo?draft=true
@@ -186,6 +188,7 @@ https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/d
 ![last commit](https://terminal-shields.vercel.app/github/last-commit/USER/REPO)
 ![forks](https://terminal-shields.vercel.app/github/forks/USER/REPO)
 ![watchers](https://terminal-shields.vercel.app/github/watchers/USER/REPO)
+![followers](https://terminal-shields.vercel.app/github/followers/USER)
 ![contributors](https://terminal-shields.vercel.app/github/contributors/USER/REPO)
 ![issues](https://terminal-shields.vercel.app/github/issues/USER/REPO)
 ![PRs](https://terminal-shields.vercel.app/github/issues-pr/USER/REPO)
