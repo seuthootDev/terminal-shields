@@ -38,7 +38,7 @@ test("?logoColor= paints the logo without changing the text colour", async (t) =
   const base = `http://127.0.0.1:${server.address().port}`;
 
   await t.test("named colour overrides the logo fill", async () => {
-    const response = await fetch(base + "/?label=test&message=ok&logo=github&logoColor=red");
+    const response = await fetch(base + "/?label=test&message=ok&logo=github&logoColor=red&theme=amber");
     assert.equal(response.status, 200);
     const body = await response.text();
     assert.match(body, /<path[^>]*fill="#ff5555"/);
@@ -53,7 +53,7 @@ test("?logoColor= paints the logo without changing the text colour", async (t) =
   });
 
   await t.test("unknown colour falls back to the text colour", async () => {
-    const response = await fetch(base + "/?label=test&message=ok&logo=github&logoColor=banana");
+    const response = await fetch(base + "/?label=test&message=ok&logo=github&logoColor=banana&theme=amber");
     assert.equal(response.status, 200);
     const body = await response.text();
     assert.doesNotMatch(body, /#ff5555/);
@@ -61,9 +61,52 @@ test("?logoColor= paints the logo without changing the text colour", async (t) =
   });
 
   await t.test("missing logoColor keeps the text colour", async () => {
-    const response = await fetch(base + "/?label=test&message=ok&logo=github");
+    const response = await fetch(base + "/?label=test&message=ok&logo=github&theme=amber");
     assert.equal(response.status, 200);
     const body = await response.text();
     assert.match(body, /<path[^>]*fill="#ffe08a"/);
   });
 });
+
+test("?label= overrides the label on a live service badge", async (t) => {
+  const realFetch = globalThis.fetch;
+  t.mock.method(globalThis, "fetch", async (url, ...args) => {
+    if (String(url).startsWith("http://127.0.0.1")) {
+      return realFetch(url, ...args);
+    }
+    return Response.json({ version: "7.1.3", downloads: 12000000 });
+  });
+
+  const server = app.listen(0, "127.0.0.1");
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  await once(server, "listening");
+  const base = `http://127.0.0.1:${server.address().port}`;
+
+  const res = await fetch(`${base}/gem/v/rails?label=likes`);
+  assert.equal(res.status, 200);
+  const body = await res.text();
+  assert.match(body, /\$ likes: v7\.1\.3/);
+  assert.doesNotMatch(body, /gem:/);
+  const fallback = await fetch(`${base}/gem/v/rails`);
+  assert.equal(fallback.status, 200);
+  const fallbackBody = await fallback.text();
+  assert.match(fallbackBody, /\$ gem: v7\.1\.3/);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
