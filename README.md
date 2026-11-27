@@ -59,6 +59,7 @@ Live GitHub / npm:
 - Homebrew formula version: ![homebrew](https://terminal-shields.vercel.app/homebrew/v/git)
 - PyPI package: ![pypi](https://terminal-shields.vercel.app/pypi/v/requests)
 - PyPI downloads: ![pypi downloads](https://terminal-shields.vercel.app/pypi/dm/requests)
+- CRAN package version: ![cran](https://terminal-shields.vercel.app/cran/v/ggplot2)
 - Docker pulls: ![docker pulls](https://terminal-shields.vercel.app/docker/pulls/_/alpine)
 - Docker last updated: ![docker last updated](https://terminal-shields.vercel.app/docker/last-updated/_/alpine)
 - custom JSON endpoint: ![endpoint](https://terminal-shields.vercel.app/endpoint?url=https%3A%2F%2Fshields.redsparr0w.com%2F2473%2Fmonday)
@@ -179,6 +180,7 @@ https://terminal-shields.vercel.app/pypi/v/:package
 https://terminal-shields.vercel.app/homebrew/v/:formula
 https://terminal-shields.vercel.app/pypi/:interval/:package
 https://terminal-shields.vercel.app/gem/v/:gem
+https://terminal-shields.vercel.app/cran/v/:pkg
 https://terminal-shields.vercel.app/docker/pulls/:user/:repo
 https://terminal-shields.vercel.app/docker/last-updated/:user/:repo/:tag?
 https://terminal-shields.vercel.app/docker/image-size/:user/:repo/:tag?

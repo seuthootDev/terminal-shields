@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { fetchCranVersion } from "./cran.js";
 import { queryJson } from "./dynamic.js";
 import { fetchDockerImageSize } from "./docker.js";
 import { parseEndpointPayload } from "./endpoint.js";
@@ -143,6 +144,23 @@ test("license color: copyleft orange, permissive green, none grey", () => {
   assert.equal(licenseColor(["(GPL-2.0 OR MIT)"]), "green");
   assert.equal(licenseColor(["LGPL-2.1", "MPL-2.0"]), "orange");
   assert.equal(licenseColor([]), "lightgrey");
+});
+
+test("CRAN package badge reads the public version metadata", async (t) => {
+  const mockedFetch = t.mock.method(globalThis, "fetch", async () =>
+    new Response(JSON.stringify({"Version":"4.0.1"}))
+  );
+  assert.deepEqual(await fetchCranVersion("ggplot2"), {
+    label: "cran",
+    message: "v4.0.1",
+    color: "blue"
+  });
+  assert.equal(mockedFetch.mock.calls[0].arguments[0], "https://crandb.r-pkg.org/ggplot2");
+});
+
+test("CRAN package badge reports missing resources", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response(null, { status: 404 }));
+  await assert.rejects(fetchCranVersion("ggplot2"), /package not found/);
 });
 
 test("dynamic json query joins matches", () => {
