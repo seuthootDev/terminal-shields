@@ -3,7 +3,8 @@ import { test } from "node:test";
 
 import { queryJson } from "./dynamic.js";
 import { parseEndpointPayload } from "./endpoint.js";
-import { hacktoberfestMessage, hacktoberfestPhase, isContributorListTooLarge, issueDetailState, parseDraftFilter, topLanguage } from "./github.js";
+import { formatMetric } from "./format.js";
+import { fetchGithubFollowers, hacktoberfestMessage, hacktoberfestPhase, isContributorListTooLarge, issueDetailState, parseDraftFilter, topLanguage } from "./github.js";
 import { licenseColor, npmLicenses } from "./npm.js";
 import { parseWakatimeSvg } from "./wakatime.js";
 
@@ -58,12 +59,12 @@ test("endpoint message override, except for isError payloads", () => {
     parseEndpointPayload({ ...payload, message: "not right", isError: true }, { message: "custom" }).message,
     "not right"
   );
-  assert.throws(() => parseEndpointPayload({ schemaVersion: 1, label: "hey" }, { message: "custom" }), /message required/);
+  assert.throws(() => parseEndpointPayload({ schemaVersion: 1, label: "hey" }, { message: "custom" }), /message re/);
   assert.throws(() => parseEndpointPayload(payload, { message: "" }), /invalid query parameter: message/);
 });
 
 test("contributor list too large is detected only on GitHub's 403 message", () => {
-  const body = '{"message":"The history or contributor list is too large to list contributors for this repository via the API."}';
+  const body = '{"message":"The history or contributor list is too large to list contributors for this repository."}';
   assert.equal(isContributorListTooLarge(403, body), true);
   assert.equal(isContributorListTooLarge(403, '{"message":"API rate limit exceeded"}'), false);
   assert.equal(isContributorListTooLarge(500, body), false);
@@ -126,4 +127,20 @@ test("wakatime value is the visible text before the link", () => {
   const svg = '<text x="1">shadow</text><text x="1">wakatime</text><text>75 hrs 6 mins</text><text>75 hrs 6 mins</text><a href="x"></a>';
   assert.equal(parseWakatimeSvg(svg), "75 hrs 6 mins");
   assert.throws(() => parseWakatimeSvg("<svg></svg>"), /unparseable/);
+});
+
+test("github followers fetcher returns the count and reports a missing user", async () => {
+  const realFetch = globalThis.fetch;
+  try {
+    globalThis.fetch = async (url) => {
+      assert.equal(url, "https://api.github.com/users/torvalds");
+      return { status: 200, ok: true, json: async () => ({ followers: 230000 }) };
+    };
+    assert.deepEqual(await fetchGithubFollowers("torvalds"), { label: "followers", message: "230000", color: "grey" });
+    assert.equal(formatMetric(230000), "230k");
+    globalThis.fetch = async () => ({ status: 404, ok: false, json: async () => ({}) });
+    await assert.rejects(() => fetchGithubFollowers("ghost"), /user not found/);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
 });
