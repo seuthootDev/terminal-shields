@@ -54,3 +54,31 @@ test("?label= overrides the label on a live service badge", async (t) => {
   const fallbackBody = await fallback.text();
   assert.match(fallbackBody, /\$ gem: v7\.1\.3/);
 });
+
+test("?cacheSeconds= raises the cache time on a live service badge", async (t) => {
+  const realFetch = globalThis.fetch;
+  t.mock.method(globalThis, "fetch", async (url, ...args) => {
+    if (String(url).startsWith("http://127.0.0.1")) {
+      return realFetch(url, ...args);
+    }
+    return Response.json({ version: "7.1.3", downloads: 12000000 });
+  });
+
+       const server = app.listen(0, "127.0.0.1");
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  await once(server, "listening");
+  const base = `http://127.0.0.1:${server.address().port}`;
+
+       for (const [query, maxAge] of [
+         ["?cacheSeconds=3600", "public, max-age=3600"],
+         ["?cacheSeconds=60", "public, max-age=1800"],
+         ["?cacheSeconds=999999", "public, max-age=86400"],
+         ["?cacheSeconds=soon", "public, max-age=1800"],
+         ["", "public, max-age=1800"],
+        ]) {
+         const res = await fetch(`${base}/gem/v/rails${query}`);
+         assert.equal(res.status, 200);
+         assert.equal(res.headers.get("cache-control"), maxAge);
+         await res.text();
+       }
+});
