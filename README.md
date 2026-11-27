@@ -186,6 +186,8 @@ https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
 https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/data.json&query=$.version
 ```
 
+Append `?label=` to any live service badge to replace its label, for example `/github/stars/USER/REPO?label=likes`. An empty or missing value keeps the service's own label.
+
 ```markdown
 ![stars](https://terminal-shields.vercel.app/github/stars/USER/REPO)
 ![license](https://terminal-shields.vercel.app/github/license/USER/REPO)
