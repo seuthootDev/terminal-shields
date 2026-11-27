@@ -10,6 +10,7 @@ import {
   fetchGithubCommitActivity,
   fetchGithubContributors,
   fetchGithubForks,
+  fetchGithubFollowers,
   fetchGithubHacktoberfest,
   fetchGithubIssues,
   fetchGithubIssueState,
@@ -185,6 +186,14 @@ app.get("/github/watchers/:user/:repo", async (req, res) => {
   const { user, repo } = req.params;
   await sendServiceBadge(req, res, async () => {
     const data = await fetchGithubWatchers(user, repo);
+    return { ...data, message: formatMetric(data.message) };
+  });
+});
+
+app.get("/github/followers/:user", async (req, res) => {
+  const { user } = req.params;
+  await sendServiceBadge(req, res, async () => {
+    const data = await fetchGithubFollowers(user);
     return { ...data, message: formatMetric(data.message) };
   });
 });
