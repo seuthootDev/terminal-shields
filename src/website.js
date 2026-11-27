@@ -8,7 +8,11 @@ export async function fetchWebsiteStatus(rawUrl, { upMessage = "up", downMessage
   const url = normalizeUrl(rawUrl);
   let up = false;
   try {
-    const res = await fetch(url, { method: "GET", redirect: "follow" });
+    const res = await fetch(url, {
+      method: "GET",
+      redirect: "follow",
+      signal: AbortSignal.timeout(5000),
+    });
     up = res.ok;
   } catch {
     up = false;

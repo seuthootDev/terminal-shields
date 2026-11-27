@@ -21,7 +21,8 @@ export async function fetchLogoPath(slug) {
   if (cache.has(key)) return cache.get(key);
 
   const res = await fetch(`${ICON_CDN}/${encodeURIComponent(key)}.svg`, {
-    headers: { Accept: "image/svg+xml", "User-Agent": "terminal-shields" }
+    headers: { Accept: "image/svg+xml", "User-Agent": "terminal-shields" },
+    signal: AbortSignal.timeout(5000),
   });
   if (!res.ok) {
     cache.set(key, null);
