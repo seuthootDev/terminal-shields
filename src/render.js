@@ -103,7 +103,8 @@ export function renderBadge({
   fg,
   bg,
   blink = false,
-  logoPath = null
+  logoPath = null,
+  logoColor
 }) {
   const palette = THEMES[theme] ?? THEMES.amber;
   const text = buildDisplayText({ label, message, theme: palette.name });
@@ -115,6 +116,7 @@ export function renderBadge({
     Math.ceil(PAD_X * 2 + logoOffset + text.length * CHAR_W)
   );
   const fill = fg ?? palette.fg;
+  const logoFill = toSvgColor(logoColor) ?? fill;
   const background = resolveBackground(bg) ?? toSvgColor(bg) ?? palette.bg;
   const filterId = `neon-${palette.name}`;
   const border = fill;
@@ -129,7 +131,7 @@ export function renderBadge({
   </defs>
   <rect width="${width}" height="${HEIGHT}" rx="3" fill="${background}"/>
   <rect width="${width}" height="${HEIGHT}" rx="3" fill="none" stroke="${border}" stroke-opacity="0.16" stroke-width="0.5"/>
-  ${hasLogo ? renderLogo({ path: logoPath, x: PAD_X, y: logoY, size: LOGO_SIZE, fill, filterId }) : ""}
+  ${hasLogo ? renderLogo({ path: logoPath, x: PAD_X, y: logoY, size: LOGO_SIZE, fill: logoFill, filterId }) : ""}
   ${renderText({ x: textX, y: TEXT_Y, fill, filterId, main, cursor, blink: blink && Boolean(cursor) })}
 </svg>`;
 }

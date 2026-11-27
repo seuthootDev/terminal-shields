@@ -59,12 +59,16 @@ function pickLogo(req) {
   return raw || undefined;
 }
 
+function pickLogoColor(req) {
+  return toSvgColor(String(req.query.logoColor ?? "").trim());
+}
+
 function pickLabel(req, fallback) {
   const raw = String(req.query.label ?? "").trim();
   return raw || fallback;
 }
 
-async function sendBadge(res, { label, message, color, theme, bg, logo, blink = false, maxAge = 3600 }) {
+async function sendBadge(res, { label, message, color, theme, bg, logo, logoColor, blink = false, maxAge = 3600 }) {
   let logoPath = null;
   if (logo) {
     try {
@@ -81,7 +85,8 @@ async function sendBadge(res, { label, message, color, theme, bg, logo, blink = 
     fg: toSvgColor(color) ?? undefined,
     bg,
     blink,
-    logoPath
+    logoPath,
+    logoColor
   });
   res.set("Cache-Control", `public, max-age=${maxAge}`);
   res.type("image/svg+xml").send(svg);
@@ -109,6 +114,7 @@ async function sendServiceBadge(req, res, loader) {
       theme: pickTheme(req, color),
       bg: pickBg(req),
       logo: pickLogo(req) ?? data.logo,
+      logoColor: pickLogoColor(req),
       blink: parseBlink(req.query),
       maxAge: data.maxAge ?? 1800
     });
@@ -132,6 +138,7 @@ app.get(["/static/v1", "/static"], async (req, res) => {
     theme: pickTheme(req, color),
     bg: pickBg(req),
     logo: pickLogo(req),
+  logoColor: pickLogoColor(req),
     blink: parseBlink(req.query)
   });
 });
@@ -155,6 +162,7 @@ app.get(/^\/badge\/(.+)$/, async (req, res) => {
       theme: pickTheme(req, color),
       bg: pickBg(req),
       logo: pickLogo(req),
+      logoColor: pickLogoColor(req),
       blink: parseBlink(req.query)
     });
   } catch (error) {
@@ -383,6 +391,7 @@ app.get("/", async (req, res) => {
       theme: pickTheme(req, color),
       bg: pickBg(req),
       logo: pickLogo(req),
+      logoColor: pickLogoColor(req),
       blink: parseBlink(req.query)
     });
     return;
