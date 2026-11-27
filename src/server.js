@@ -29,6 +29,7 @@ import { fetchLogoPath } from "./logo.js";
 import { fetchNpmDownloads, fetchNpmLicense, fetchNpmVersion } from "./npm.js";
 import { parseBadgePath } from "./parse.js";
 import { fetchPypiDownloads, fetchPypiVersion } from "./pypi.js";
+import { fetchRubyGemsVersion } from "./rubygems.js";
 import { renderBadge } from "./render.js";
 import { resolveTheme } from "./themes.js";
 import { fetchWakatimeRepo, fetchWakatimeUser, fetchWakatimeUserProject } from "./wakatime.js";
@@ -317,6 +318,10 @@ app.get("/npm/v/:pkg/:tag?", async (req, res) => {
 
 app.get("/pypi/v/:pkg", async (req, res) => {
   await sendServiceBadge(req, res, () => fetchPypiVersion(req.params.pkg));
+});
+
+app.get("/gem/v/:gem", async (req, res) => {
+  await sendServiceBadge(req, res, () => fetchRubyGemsVersion(req.params.gem));
 });
 
 app.get("/pypi/:interval(dd|dw|dm)/:pkg", async (req, res) => {
