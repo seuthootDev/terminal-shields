@@ -59,12 +59,12 @@ test("endpoint message override, except for isError payloads", () => {
     parseEndpointPayload({ ...payload, message: "not right", isError: true }, { message: "custom" }).message,
     "not right"
   );
-  assert.throws(() => parseEndpointPayload({ schemaVersion: 1, label: "hey" }, { message: "custom" }), /message re/);
+  assert.throws(() => parseEndpointPayload({ schemaVersion: 1, label: "hey" }, { message: "custom" }), /message required/);
   assert.throws(() => parseEndpointPayload(payload, { message: "" }), /invalid query parameter: message/);
 });
 
 test("contributor list too large is detected only on GitHub's 403 message", () => {
-  const body = '{"message":"The history or contributor list is too large to list contributors for this repository."}';
+  const body = '{"message":"The history or contributor list is too large to list contributors for this repository via the API."}';
   assert.equal(isContributorListTooLarge(403, body), true);
   assert.equal(isContributorListTooLarge(403, '{"message":"API rate limit exceeded"}'), false);
   assert.equal(isContributorListTooLarge(500, body), false);
