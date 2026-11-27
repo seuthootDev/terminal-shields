@@ -1,7 +1,7 @@
 import express from "express";
 
 import { inferTheme, toSvgColor } from "./colors.js";
-import { fetchDockerLastUpdated, fetchDockerPulls } from "./docker.js";
+import { fetchDockerImageSize, fetchDockerLastUpdated, fetchDockerPulls } from "./docker.js";
 import { fetchDynamicJsonBadge } from "./dynamic.js";
 import { fetchEndpointBadge } from "./endpoint.js";
 import { formatMetric } from "./format.js";
@@ -349,6 +349,11 @@ app.get("/docker/pulls/:user/:repo", async (req, res) => {
 app.get("/docker/last-updated/:user/:repo/:tag?", async (req, res) => {
   const { user, repo, tag } = req.params;
   await sendServiceBadge(req, res, () => fetchDockerLastUpdated(user, repo, tag));
+});
+
+app.get("/docker/image-size/:user/:repo/:tag?", async (req, res) => {
+  const { user, repo, tag } = req.params;
+  await sendServiceBadge(req, res, () => fetchDockerImageSize(user, repo, tag));
 });
 
 app.get("/", async (req, res) => {
