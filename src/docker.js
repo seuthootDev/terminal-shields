@@ -1,4 +1,4 @@
-import { formatRelativeDate } from "./format.js";
+import { formatKbSize, formatRelativeDate } from "./format.js";
 
 const DOCKER_HUB = "https://hub.docker.com/v2/repositories";
 const HEADERS = { Accept: "application/json", "User-Agent": "terminal-shields" };
@@ -21,6 +21,15 @@ async function fetchDockerJson(url, notFound) {
 export async function fetchDockerPulls(user, repo) {
   const data = await fetchDockerJson(`${DOCKER_HUB}/${repoPath(user, repo)}/`, "repository not found");
   return { label: "docker pulls", count: Number(data.pull_count ?? 0), color: "blue" };
+}
+
+export async function fetchDockerImageSize(user, repo, tag = "latest") {
+  const url = `${DOCKER_HUB}/${repoPath(user, repo)}/tags/${encodeURIComponent(tag)}`;
+  const data = await fetchDockerJson(url, "repository or tag not found");
+  const size = data.full_size;
+  if (!Number.isFinite(size) || size < 0) throw new Error("no image size found");
+  const message = size < 1024 ? `${size} B` : formatKbSize(size / 1024);
+  return { label: "image size", message, color: "blue" };
 }
 
 /**

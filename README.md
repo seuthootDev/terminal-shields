@@ -179,6 +179,7 @@ https://terminal-shields.vercel.app/pypi/:interval/:package
 https://terminal-shields.vercel.app/gem/v/:gem
 https://terminal-shields.vercel.app/docker/pulls/:user/:repo
 https://terminal-shields.vercel.app/docker/last-updated/:user/:repo/:tag?
+https://terminal-shields.vercel.app/docker/image-size/:user/:repo/:tag?
 https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
 https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/data.json&query=$.version
 ```
@@ -232,6 +233,8 @@ https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/d
 `gem/v` shows the latest version returned by [RubyGems](https://rubygems.org/).
 
 `docker/pulls` and `docker/last-updated` read Docker Hub; use `_` as the user for official images (`/docker/pulls/_/alpine`). `last-updated` shows the newest push across all tags, or one tag's push when you append it (`/docker/last-updated/_/alpine/latest`).
+
+`docker/image-size` shows the size reported by Docker Hub for a tag. It defaults to `latest` when the tag is omitted.
 
 `endpoint` renders any JSON that follows the [Shields endpoint schema](https://shields.io/badges/endpoint-badge), so you can badge whatever data you host:
 

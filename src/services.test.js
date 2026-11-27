@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { queryJson } from "./dynamic.js";
+import { fetchDockerImageSize } from "./docker.js";
 import { parseEndpointPayload } from "./endpoint.js";
 import { formatMetric } from "./format.js";
 import { fetchGithubFollowers, hacktoberfestMessage, hacktoberfestPhase, isContributorListTooLarge, issueDetailState, parseDraftFilter, topLanguage } from "./github.js";
@@ -22,6 +23,22 @@ test("RubyGems version uses the published gem version", async (t) => {
 test("RubyGems version reports a missing gem", async (t) => {
   t.mock.method(globalThis, "fetch", async () => new Response(null, { status: 404 }));
   await assert.rejects(fetchRubyGemsVersion("missing-gem"), /gem not found/);
+});
+
+test("Docker image size uses the default tag and follows the official image convention", async (t) => {
+  const fetch = t.mock.method(globalThis, "fetch", async () =>
+    Response.json({ full_size: 45 * 1024 ** 2 })
+  );
+  assert.deepEqual(await fetchDockerImageSize("_", "alpine"), {
+    label: "image size", message: "45 MB", color: "blue"
+  });
+  assert.equal(fetch.mock.calls[0].arguments[0], "https://hub.docker.com/v2/repositories/library/alpine/tags/latest");
+});
+
+test("Docker image size requests an explicit tag and checks for a size", async (t) => {
+  const fetch = t.mock.method(globalThis, "fetch", async () => Response.json({}));
+  await assert.rejects(fetchDockerImageSize("team", "image", "v1.2"), /no image size found/);
+  assert.equal(fetch.mock.calls[0].arguments[0], "https://hub.docker.com/v2/repositories/team/image/tags/v1.2");
 });
 
 test("hacktoberfest phase before, during, after October (UTC)", () => {
