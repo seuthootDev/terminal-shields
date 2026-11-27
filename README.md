@@ -98,7 +98,7 @@ Also accepts hex: `?bg=1a1a2e`
 
 ### Logos (`?logo=`) — Simple Icons, monochrome
 
-Icons from [Simple Icons](https://simpleicons.org) are painted the **same color as the text** (terminal look). Use the icon slug (`qt`, `react`, `typescript`, …).
+Icons from [Simple Icons](https://simpleicons.org) are painted the **same color as the text** (terminal look). Use the icon slug (`qt`, `react`, `typescript`, …). Add `?logoColor=<colour>` to paint the logo in a different colour instead — a named colour (`?logoColor=red`) or a hex value (`?logoColor=00ff00`); a missing or unknown value keeps the text colour.
 
 ![qt](https://terminal-shields.vercel.app/badge/qml-41CD52?logo=qt&theme=amber)
 ![react](https://terminal-shields.vercel.app/badge/react-18-blue?logo=react&theme=amber)
