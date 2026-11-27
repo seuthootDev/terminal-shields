@@ -25,6 +25,7 @@ import {
   fetchGithubWorkflowStatus,
   parseDraftFilter
 } from "./github.js";
+import { fetchHomebrewVersion } from "./homebrew.js";
 import { homePageHtml } from "./homePage.js";
 import { fetchLogoPath } from "./logo.js";
 import { fetchNpmDownloads, fetchNpmLicense, fetchNpmVersion } from "./npm.js";
@@ -323,6 +324,11 @@ app.get("/npm/v/:pkg/:tag?", async (req, res) => {
   const pkg = req.params.pkg;
   const tag = String(req.params.tag ?? req.query.tag ?? "latest").trim() || "latest";
   await sendServiceBadge(req, res, () => fetchNpmVersion(pkg, tag));
+});
+
+app.get("/homebrew/v/:formula", async (req, res) => {
+  const { formula } = req.params;
+  await sendServiceBadge(req, res, () => fetchHomebrewVersion(formula));
 });
 
 app.get("/pypi/v/:pkg", async (req, res) => {

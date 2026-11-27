@@ -56,6 +56,7 @@ Live GitHub / npm:
 - scoped npm: ![babel](https://terminal-shields.vercel.app/npm/v/@babel/core)
 - npm downloads: ![npm downloads](https://terminal-shields.vercel.app/npm/dm/express)
 - npm license: ![npm license](https://terminal-shields.vercel.app/npm/l/express)
+- Homebrew formula version: ![homebrew](https://terminal-shields.vercel.app/homebrew/v/git)
 - PyPI package: ![pypi](https://terminal-shields.vercel.app/pypi/v/requests)
 - PyPI downloads: ![pypi downloads](https://terminal-shields.vercel.app/pypi/dm/requests)
 - Docker pulls: ![docker pulls](https://terminal-shields.vercel.app/docker/pulls/_/alpine)
@@ -175,6 +176,7 @@ https://terminal-shields.vercel.app/npm/v/:package/:tag
 https://terminal-shields.vercel.app/npm/:interval/:package
 https://terminal-shields.vercel.app/npm/l/:package
 https://terminal-shields.vercel.app/pypi/v/:package
+https://terminal-shields.vercel.app/homebrew/v/:formula
 https://terminal-shields.vercel.app/pypi/:interval/:package
 https://terminal-shields.vercel.app/gem/v/:gem
 https://terminal-shields.vercel.app/docker/pulls/:user/:repo
