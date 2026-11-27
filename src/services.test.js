@@ -6,6 +6,7 @@ import { fetchDockerImageSize } from "./docker.js";
 import { parseEndpointPayload } from "./endpoint.js";
 import { formatMetric } from "./format.js";
 import { fetchGithubFollowers, hacktoberfestMessage, hacktoberfestPhase, isContributorListTooLarge, issueDetailState, parseDraftFilter, topLanguage } from "./github.js";
+import { fetchHomebrewVersion } from "./homebrew.js";
 import { licenseColor, npmLicenses } from "./npm.js";
 import { fetchRubyGemsVersion } from "./rubygems.js";
 import { parseWakatimeSvg } from "./wakatime.js";
@@ -109,6 +110,23 @@ test("draft filter parses true/false/unset", () => {
   assert.equal(parseDraftFilter("true"), true);
   assert.equal(parseDraftFilter("FALSE"), false);
   assert.throws(() => parseDraftFilter("maybe"), /draft must be/);
+});
+
+test("Homebrew formula badge reads the public version metadata", async (t) => {
+  const mockedFetch = t.mock.method(globalThis, "fetch", async () =>
+    new Response(JSON.stringify({"versions":{"stable":"2.45.1","head":"HEAD"}}))
+  );
+  assert.deepEqual(await fetchHomebrewVersion("git"), {
+    label: "homebrew",
+    message: "v2.45.1",
+    color: "blue"
+  });
+  assert.equal(mockedFetch.mock.calls[0].arguments[0], "https://formulae.brew.sh/api/formula/git.json");
+});
+
+test("Homebrew formula badge reports missing resources", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response(null, { status: 404 }));
+  await assert.rejects(fetchHomebrewVersion("git"), /formula not found/);
 });
 
 test("npm licenses from every manifest shape", () => {
