@@ -28,6 +28,7 @@ import {
 import { fetchHomebrewVersion } from "./homebrew.js";
 import { homePageHtml } from "./homePage.js";
 import { fetchLogoPath } from "./logo.js";
+import { fetchMavenVersion } from "./maven.js";
 import { fetchNpmDownloads, fetchNpmLicense, fetchNpmVersion } from "./npm.js";
 import { parseBadgePath } from "./parse.js";
 import { fetchPypiDownloads, fetchPypiVersion } from "./pypi.js";
@@ -355,6 +356,11 @@ app.get("/docker/pulls/:user/:repo", async (req, res) => {
     const data = await fetchDockerPulls(user, repo);
     return { ...data, message: formatMetric(data.count) };
   });
+});
+
+app.get("/maven-central/v/:group/:artifact", async (req, res) => {
+  const { group, artifact } = req.params;
+  await sendServiceBadge(req, res, () => fetchMavenVersion(group, artifact));
 });
 
 app.get("/docker/last-updated/:user/:repo/:tag?", async (req, res) => {

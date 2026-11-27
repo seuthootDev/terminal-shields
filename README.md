@@ -60,6 +60,7 @@ Live GitHub / npm:
 - PyPI package: ![pypi](https://terminal-shields.vercel.app/pypi/v/requests)
 - PyPI downloads: ![pypi downloads](https://terminal-shields.vercel.app/pypi/dm/requests)
 - Docker pulls: ![docker pulls](https://terminal-shields.vercel.app/docker/pulls/_/alpine)
+- Maven Central artifact version: ![maven-central](https://terminal-shields.vercel.app/maven-central/v/org.apache.commons/commons-lang3)
 - Docker last updated: ![docker last updated](https://terminal-shields.vercel.app/docker/last-updated/_/alpine)
 - custom JSON endpoint: ![endpoint](https://terminal-shields.vercel.app/endpoint?url=https%3A%2F%2Fshields.redsparr0w.com%2F2473%2Fmonday)
 - endpoint with message override: ![endpoint override](https://terminal-shields.vercel.app/endpoint?url=https%3A%2F%2Fshields.redsparr0w.com%2F2473%2Fmonday&message=custom%20message)
@@ -180,6 +181,7 @@ https://terminal-shields.vercel.app/homebrew/v/:formula
 https://terminal-shields.vercel.app/pypi/:interval/:package
 https://terminal-shields.vercel.app/gem/v/:gem
 https://terminal-shields.vercel.app/docker/pulls/:user/:repo
+https://terminal-shields.vercel.app/maven-central/v/:group/:artifact
 https://terminal-shields.vercel.app/docker/last-updated/:user/:repo/:tag?
 https://terminal-shields.vercel.app/docker/image-size/:user/:repo/:tag?
 https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
