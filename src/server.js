@@ -59,6 +59,11 @@ function pickLogo(req) {
   return raw || undefined;
 }
 
+function pickLabel(req, fallback) {
+  const raw = String(req.query.label ?? "").trim();
+  return raw || fallback;
+}
+
 async function sendBadge(res, { label, message, color, theme, bg, logo, blink = false, maxAge = 3600 }) {
   let logoPath = null;
   if (logo) {
@@ -98,7 +103,7 @@ async function sendServiceBadge(req, res, loader) {
     const data = await loader();
     const color = String(req.query.color ?? data.color);
     await sendBadge(res, {
-      label: data.label,
+      label: pickLabel(req, data.label),
       message: data.message,
       color,
       theme: pickTheme(req, color),
