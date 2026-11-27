@@ -176,6 +176,7 @@ https://terminal-shields.vercel.app/npm/:interval/:package
 https://terminal-shields.vercel.app/npm/l/:package
 https://terminal-shields.vercel.app/pypi/v/:package
 https://terminal-shields.vercel.app/pypi/:interval/:package
+https://terminal-shields.vercel.app/gem/v/:gem
 https://terminal-shields.vercel.app/docker/pulls/:user/:repo
 https://terminal-shields.vercel.app/docker/last-updated/:user/:repo/:tag?
 https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
@@ -227,6 +228,8 @@ https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/d
 `npm/l` reads the latest version's license. SPDX expressions (`(MIT OR Apache-2.0)`) and legacy multi-license manifests (`MIT, GPL-2.0`) are both shown; copyleft-only licenses are orange, everything else green.
 
 `pypi/v` shows the latest PyPI release; `pypi/dd`, `pypi/dw`, `pypi/dm` show daily / weekly / monthly downloads from [pypistats](https://pypistats.org).
+
+`gem/v` shows the latest version returned by [RubyGems](https://rubygems.org/).
 
 `docker/pulls` and `docker/last-updated` read Docker Hub; use `_` as the user for official images (`/docker/pulls/_/alpine`). `last-updated` shows the newest push across all tags, or one tag's push when you append it (`/docker/last-updated/_/alpine/latest`).
 

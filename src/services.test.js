@@ -6,7 +6,23 @@ import { parseEndpointPayload } from "./endpoint.js";
 import { formatMetric } from "./format.js";
 import { fetchGithubFollowers, hacktoberfestMessage, hacktoberfestPhase, isContributorListTooLarge, issueDetailState, parseDraftFilter, topLanguage } from "./github.js";
 import { licenseColor, npmLicenses } from "./npm.js";
+import { fetchRubyGemsVersion } from "./rubygems.js";
 import { parseWakatimeSvg } from "./wakatime.js";
+
+test("RubyGems version uses the published gem version", async (t) => {
+  const fetch = t.mock.method(globalThis, "fetch", async () =>
+    Response.json({ version: "7.1.3", downloads: 120000000 })
+  );
+  assert.deepEqual(await fetchRubyGemsVersion("rails"), {
+    label: "gem", message: "v7.1.3", color: "blue"
+  });
+  assert.equal(fetch.mock.calls[0].arguments[0], "https://rubygems.org/api/v1/gems/rails.json");
+});
+
+test("RubyGems version reports a missing gem", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response(null, { status: 404 }));
+  await assert.rejects(fetchRubyGemsVersion("missing-gem"), /gem not found/);
+});
 
 test("hacktoberfest phase before, during, after October (UTC)", () => {
   assert.deepEqual(hacktoberfestPhase(2026, new Date("2026-09-28T12:00:00Z")), { phase: "before", days: 3 });
