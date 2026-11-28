@@ -59,6 +59,7 @@ Live GitHub / npm:
 - Homebrew formula version: ![homebrew](https://terminal-shields.vercel.app/homebrew/v/git)
 - PyPI package: ![pypi](https://terminal-shields.vercel.app/pypi/v/requests)
 - PyPI downloads: ![pypi downloads](https://terminal-shields.vercel.app/pypi/dm/requests)
+- CRAN package version: ![cran](https://terminal-shields.vercel.app/cran/v/ggplot2)
 - Docker pulls: ![docker pulls](https://terminal-shields.vercel.app/docker/pulls/_/alpine)
 - Maven Central artifact version: ![maven-central](https://terminal-shields.vercel.app/maven-central/v/org.apache.commons/commons-lang3)
 - Docker last updated: ![docker last updated](https://terminal-shields.vercel.app/docker/last-updated/_/alpine)
@@ -180,6 +181,7 @@ https://terminal-shields.vercel.app/pypi/v/:package
 https://terminal-shields.vercel.app/homebrew/v/:formula
 https://terminal-shields.vercel.app/pypi/:interval/:package
 https://terminal-shields.vercel.app/gem/v/:gem
+https://terminal-shields.vercel.app/cran/v/:pkg
 https://terminal-shields.vercel.app/docker/pulls/:user/:repo
 https://terminal-shields.vercel.app/maven-central/v/:group/:artifact
 https://terminal-shields.vercel.app/docker/last-updated/:user/:repo/:tag?
