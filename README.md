@@ -59,6 +59,7 @@ Live GitHub / npm:
 - Homebrew formula version: ![homebrew](https://terminal-shields.vercel.app/homebrew/v/git)
 - PyPI package: ![pypi](https://terminal-shields.vercel.app/pypi/v/requests)
 - PyPI downloads: ![pypi downloads](https://terminal-shields.vercel.app/pypi/dm/requests)
+- NuGet package: ![nuget](https://terminal-shields.vercel.app/nuget/v/newtonsoft.json)
 - Docker pulls: ![docker pulls](https://terminal-shields.vercel.app/docker/pulls/_/alpine)
 - Docker last updated: ![docker last updated](https://terminal-shields.vercel.app/docker/last-updated/_/alpine)
 - custom JSON endpoint: ![endpoint](https://terminal-shields.vercel.app/endpoint?url=https%3A%2F%2Fshields.redsparr0w.com%2F2473%2Fmonday)
@@ -179,6 +180,7 @@ https://terminal-shields.vercel.app/pypi/v/:package
 https://terminal-shields.vercel.app/homebrew/v/:formula
 https://terminal-shields.vercel.app/pypi/:interval/:package
 https://terminal-shields.vercel.app/gem/v/:gem
+https://terminal-shields.vercel.app/nuget/v/:package
 https://terminal-shields.vercel.app/docker/pulls/:user/:repo
 https://terminal-shields.vercel.app/docker/last-updated/:user/:repo/:tag?
 https://terminal-shields.vercel.app/docker/image-size/:user/:repo/:tag?
@@ -235,6 +237,7 @@ Append `?label=` to any live service badge to replace its label, for example `/g
 `pypi/v` shows the latest PyPI release; `pypi/dd`, `pypi/dw`, `pypi/dm` show daily / weekly / monthly downloads from [pypistats](https://pypistats.org).
 
 `gem/v` shows the latest version returned by [RubyGems](https://rubygems.org/).
+`nuget/v` shows the latest stable NuGet version.
 
 `docker/pulls` and `docker/last-updated` read Docker Hub; use `_` as the user for official images (`/docker/pulls/_/alpine`). `last-updated` shows the newest push across all tags, or one tag's push when you append it (`/docker/last-updated/_/alpine/latest`).
 

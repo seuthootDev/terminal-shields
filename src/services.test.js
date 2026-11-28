@@ -8,6 +8,7 @@ import { formatMetric } from "./format.js";
 import { fetchGithubFollowers, hacktoberfestMessage, hacktoberfestPhase, isContributorListTooLarge, issueDetailState, parseDraftFilter, topLanguage } from "./github.js";
 import { fetchHomebrewVersion } from "./homebrew.js";
 import { licenseColor, npmLicenses } from "./npm.js";
+import { pickLatestStableVersion } from "./nuget.js";
 import { fetchRubyGemsVersion } from "./rubygems.js";
 import { parseWakatimeSvg } from "./wakatime.js";
 
@@ -194,4 +195,12 @@ test("github followers fetcher returns the count and reports a missing user", as
   } finally {
     globalThis.fetch = realFetch;
   }
+});
+
+test("pickLatestStableVersion returns the last stable NuGet version", () => {
+  assert.equal(pickLatestStableVersion(["1.0.0", "1.1.0-alpha", "1.1.0"]), "1.1.0");
+  assert.equal(pickLatestStableVersion(["2.0.0-rc.1", "1.9.0"]), "1.9.0");
+  assert.equal(pickLatestStableVersion(["3.0.0-beta"]), null);
+  assert.equal(pickLatestStableVersion([]), null);
+  assert.equal(pickLatestStableVersion(undefined), null);
 });
