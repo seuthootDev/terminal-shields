@@ -33,6 +33,7 @@ import { fetchMavenVersion } from "./maven.js";
 import { fetchNpmDownloads, fetchNpmLicense, fetchNpmVersion } from "./npm.js";
 import { fetchOpenVsxVersion } from "./openvsx.js";
 import { parseBadgePath } from "./parse.js";
+import { fetchPubVersion } from "./pub.js";
 import { fetchPypiDownloads, fetchPypiVersion } from "./pypi.js";
 import { fetchRubyGemsVersion } from "./rubygems.js";
 import { renderBadge } from "./render.js";
@@ -350,6 +351,10 @@ app.get("/npm/v/:pkg/:tag?", async (req, res) => {
 app.get("/homebrew/v/:formula", async (req, res) => {
   const { formula } = req.params;
   await sendServiceBadge(req, res, () => fetchHomebrewVersion(formula));
+});
+
+app.get("/pub/v/:package", async (req, res) => {
+  await sendServiceBadge(req, res, () => fetchPubVersion(req.params.package));
 });
 
 app.get("/pypi/v/:pkg", async (req, res) => {
