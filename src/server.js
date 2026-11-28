@@ -29,6 +29,7 @@ import { fetchHomebrewVersion } from "./homebrew.js";
 import { homePageHtml } from "./homePage.js";
 import { fetchLogoPath } from "./logo.js";
 import { fetchNpmDownloads, fetchNpmLicense, fetchNpmVersion } from "./npm.js";
+import { fetchNugetVersion } from "./nuget.js";
 import { parseBadgePath } from "./parse.js";
 import { fetchPypiDownloads, fetchPypiVersion } from "./pypi.js";
 import { fetchRubyGemsVersion } from "./rubygems.js";
@@ -338,6 +339,10 @@ app.get("/homebrew/v/:formula", async (req, res) => {
 
 app.get("/pypi/v/:pkg", async (req, res) => {
   await sendServiceBadge(req, res, () => fetchPypiVersion(req.params.pkg));
+});
+
+app.get("/nuget/v/:package", async (req, res) => {
+  await sendServiceBadge(req, res, () => fetchNugetVersion(req.params.package));
 });
 
 app.get("/gem/v/:gem", async (req, res) => {
