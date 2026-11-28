@@ -183,6 +183,7 @@ https://terminal-shields.vercel.app/homebrew/v/:formula
 https://terminal-shields.vercel.app/pypi/:interval/:package
 https://terminal-shields.vercel.app/gem/v/:gem
 https://terminal-shields.vercel.app/cran/v/:pkg
+https://terminal-shields.vercel.app/hexpm/dt/:package
 https://terminal-shields.vercel.app/docker/pulls/:user/:repo
 https://terminal-shields.vercel.app/maven-central/v/:group/:artifact
 https://terminal-shields.vercel.app/docker/last-updated/:user/:repo/:tag?

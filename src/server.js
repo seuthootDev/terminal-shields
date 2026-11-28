@@ -26,6 +26,7 @@ import {
   fetchGithubWorkflowStatus,
   parseDraftFilter
 } from "./github.js";
+import { fetchHexTotalDownloads } from "./hexpm.js";
 import { fetchHomebrewVersion } from "./homebrew.js";
 import { homePageHtml } from "./homePage.js";
 import { fetchLogoPath } from "./logo.js";
@@ -368,6 +369,10 @@ app.get("/pypi/:interval(dd|dw|dm)/:pkg", async (req, res) => {
 app.get("/cran/v/:pkg", async (req, res) => {
   const { pkg } = req.params;
   await sendServiceBadge(req, res, () => fetchCranVersion(pkg));
+});
+
+app.get("/hexpm/dt/:package", async (req, res) => {
+  await sendServiceBadge(req, res, () => fetchHexTotalDownloads(req.params.package));
 });
 
 app.get("/docker/pulls/:user/:repo", async (req, res) => {
