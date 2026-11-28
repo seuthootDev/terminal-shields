@@ -31,6 +31,7 @@ import { homePageHtml } from "./homePage.js";
 import { fetchLogoPath } from "./logo.js";
 import { fetchMavenVersion } from "./maven.js";
 import { fetchNpmDownloads, fetchNpmLicense, fetchNpmVersion } from "./npm.js";
+import { fetchOpenVsxVersion } from "./openvsx.js";
 import { parseBadgePath } from "./parse.js";
 import { fetchPypiDownloads, fetchPypiVersion } from "./pypi.js";
 import { fetchRubyGemsVersion } from "./rubygems.js";
@@ -288,6 +289,11 @@ app.get("/wakatime/github/:owner/:repo", async (req, res) => {
 app.get("/endpoint", async (req, res) => {
   const message = req.query.message == null ? undefined : String(req.query.message);
   await sendServiceBadge(req, res, () => fetchEndpointBadge(req.query.url, { message }));
+});
+
+app.get("/open-vsx/v/:namespace/:extension", async (req, res) => {
+  const { namespace, extension } = req.params;
+  await sendServiceBadge(req, res, () => fetchOpenVsxVersion(namespace, extension));
 });
 
 app.get("/website", async (req, res) => {

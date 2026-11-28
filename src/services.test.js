@@ -11,6 +11,7 @@ import { fetchHomebrewVersion } from "./homebrew.js";
 import { fetchMavenVersion } from "./maven.js";
 import { licenseColor, npmLicenses } from "./npm.js";
 import { fetchRubyGemsVersion } from "./rubygems.js";
+import { fetchOpenVsxVersion } from "./openvsx.js";
 import { parseWakatimeSvg } from "./wakatime.js";
 
 test("RubyGems version uses the published gem version", async (t) => {
@@ -214,6 +215,23 @@ test("issue/PR detail state mirrors Shields, including drafts", () => {
   assert.equal(issue({ state: "closed", state_reason: "not_planned" }).message, "not planned");
   // /issues/:n also serves PRs; the pull_request key marks them
   assert.equal(issueDetailState({ state: "open", pull_request: { draft: true } }, "issues", 3).message, "draft");
+});
+
+test("Open VSX extension badge reads the public version metadata", async (t) => {
+  const mockedFetch = t.mock.method(globalThis, "fetch", async () =>
+    new Response(JSON.stringify({"version":"11.0.0"}))
+  );
+  assert.deepEqual(await fetchOpenVsxVersion("esbenp", "prettier-vscode"), {
+    label: "open vsx",
+    message: "v11.0.0",
+    color: "blue"
+  });
+  assert.equal(mockedFetch.mock.calls[0].arguments[0], "https://open-vsx.org/api/esbenp/prettier-vscode");
+});
+
+test("Open VSX extension badge reports missing resources", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response(null, { status: 404 }));
+  await assert.rejects(fetchOpenVsxVersion("esbenp", "prettier-vscode"), /extension not found/);
 });
 
 test("wakatime value is the visible text before the link", () => {

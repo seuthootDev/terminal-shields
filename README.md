@@ -58,6 +58,7 @@ Live GitHub / npm:
 - npm license: ![npm license](https://terminal-shields.vercel.app/npm/l/express)
 - Homebrew formula version: ![homebrew](https://terminal-shields.vercel.app/homebrew/v/git)
 - PyPI package: ![pypi](https://terminal-shields.vercel.app/pypi/v/requests)
+- Open VSX extension version: ![open vsx](https://terminal-shields.vercel.app/open-vsx/v/esbenp/prettier-vscode)
 - PyPI downloads: ![pypi downloads](https://terminal-shields.vercel.app/pypi/dm/requests)
 - CRAN package version: ![cran](https://terminal-shields.vercel.app/cran/v/ggplot2)
 - Docker pulls: ![docker pulls](https://terminal-shields.vercel.app/docker/pulls/_/alpine)
@@ -186,6 +187,7 @@ https://terminal-shields.vercel.app/docker/pulls/:user/:repo
 https://terminal-shields.vercel.app/maven-central/v/:group/:artifact
 https://terminal-shields.vercel.app/docker/last-updated/:user/:repo/:tag?
 https://terminal-shields.vercel.app/docker/image-size/:user/:repo/:tag?
+https://terminal-shields.vercel.app/open-vsx/v/:namespace/:extension
 https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
 https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/data.json&query=$.version
 ```
