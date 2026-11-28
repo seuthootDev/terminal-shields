@@ -39,6 +39,7 @@ import { renderBadge } from "./render.js";
 import { resolveTheme } from "./themes.js";
 import { fetchWakatimeRepo, fetchWakatimeUser, fetchWakatimeUserProject } from "./wakatime.js";
 import { fetchWebsiteStatus } from "./website.js";
+import { fetchWordPressPluginVersion } from "./wordpress.js";
 
 const app = express();
 const PORT = Number.parseInt(process.env.PORT ?? "8000", 10);
@@ -333,6 +334,10 @@ app.get("/npm/l/@:scope/:pkg", async (req, res) => {
 
 app.get("/npm/l/:pkg", async (req, res) => {
   await sendServiceBadge(req, res, () => fetchNpmLicense(req.params.pkg));
+});
+
+app.get("/wordpress/plugin/v/:slug", async (req, res) => {
+  await sendServiceBadge(req, res, () => fetchWordPressPluginVersion(req.params.slug));
 });
 
 app.get("/npm/v/@:scope/:pkg", async (req, res) => {

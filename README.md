@@ -173,6 +173,7 @@ https://terminal-shields.vercel.app/wakatime/user/:user
 https://terminal-shields.vercel.app/wakatime/user/:user/project/:project
 https://terminal-shields.vercel.app/wakatime/github/:owner/:repo
 https://terminal-shields.vercel.app/website?url=https://example.com
+https://terminal-shields.vercel.app/wordpress/plugin/v/:slug
 https://terminal-shields.vercel.app/npm/v/:package
 https://terminal-shields.vercel.app/npm/v/@:scope/:package
 https://terminal-shields.vercel.app/npm/v/:package/:tag
