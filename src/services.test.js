@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { fetchCodecovCoverage } from "./codecov.js";
 import { queryJson } from "./dynamic.js";
 import { fetchDockerImageSize } from "./docker.js";
 import { parseEndpointPayload } from "./endpoint.js";
@@ -194,4 +195,28 @@ test("github followers fetcher returns the count and reports a missing user", as
   } finally {
     globalThis.fetch = realFetch;
   }
+});
+
+
+test("Codecov coverage reports the rounded percentage and colours it by band", async (t) => {
+  const coverages = [55, 75, 87.4, 95];
+  const fetch = t.mock.method(globalThis, "fetch", async () => Response.json({ totals: { coverage: coverages.shift() } }));
+  assert.deepEqual(await fetchCodecovCoverage("octocat", "low"), {
+    label: "coverage", message: "55%", color: "red"
+  });
+  assert.deepEqual(await fetchCodecovCoverage("octocat", "mid"), {
+    label: "coverage", message: "75%", color: "yellow"
+  });
+  assert.deepEqual(await fetchCodecovCoverage("octocat", "hello-world"), {
+    label: "coverage", message: "87%", color: "yellowgreen"
+  });
+  assert.deepEqual(await fetchCodecovCoverage("octocat", "high"), {
+    label: "coverage", message: "95%", color: "brightgreen"
+  });
+  assert.equal(fetch.mock.calls[0].arguments[0], "https://api.codecov.io/api/v2/github/octocat/repos/low/");
+});
+
+test("Codecov coverage reports a missing repo", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response(null, { status: 404 }));
+  await assert.rejects(fetchCodecovCoverage("octocat", "missing"), /repo not found/);
 });

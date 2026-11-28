@@ -50,6 +50,7 @@ Live GitHub / npm:
 - commit activity: ![gh commit activity](https://terminal-shields.vercel.app/github/commit-activity/m/badges/shields)
 - top language: ![gh top language](https://terminal-shields.vercel.app/github/languages/top/badges/shields)
 - Hacktoberfest: ![hacktoberfest](https://terminal-shields.vercel.app/github/hacktoberfest/2026/badges/shields?suggestion_label=hacktoberfest)
+- Codecov coverage: ![codecov](https://terminal-shields.vercel.app/codecov/c/github/badges/shields)
 - WakaTime repo time: ![wakatime](https://terminal-shields.vercel.app/wakatime/github/wakatime/sublime-wakatime)
 - live demo: ![live demo](https://terminal-shields.vercel.app/website?url=https%3A%2F%2Fterminal-shields.vercel.app)
 - npm package: ![npm](https://terminal-shields.vercel.app/npm/v/express)
@@ -166,6 +167,7 @@ https://terminal-shields.vercel.app/github/actions/workflow/status/:user/:repo/:
 https://terminal-shields.vercel.app/github/commit-activity/:interval/:user/:repo?branch=main
 https://terminal-shields.vercel.app/github/languages/top/:user/:repo
 https://terminal-shields.vercel.app/github/hacktoberfest/:year/:user/:repo?suggestion_label=hacktoberfest
+https://terminal-shields.vercel.app/codecov/c/github/:user/:repo
 https://terminal-shields.vercel.app/wakatime/user/:user
 https://terminal-shields.vercel.app/wakatime/user/:user/project/:project
 https://terminal-shields.vercel.app/wakatime/github/:owner/:repo
@@ -206,6 +208,7 @@ Append `?label=` to any live service badge to replace its label, for example `/g
 ![commit activity](https://terminal-shields.vercel.app/github/commit-activity/m/USER/REPO)
 ![top language](https://terminal-shields.vercel.app/github/languages/top/USER/REPO)
 ![hacktoberfest](https://terminal-shields.vercel.app/github/hacktoberfest/2026/USER/REPO)
+![codecov](https://terminal-shields.vercel.app/codecov/c/github/USER/REPO)
 ![wakatime](https://terminal-shields.vercel.app/wakatime/github/USER/REPO)
 ![live demo](https://terminal-shields.vercel.app/website?url=https%3A%2F%2Fyour-demo.example.com)
 ![npm](https://terminal-shields.vercel.app/npm/v/express)
