@@ -7,6 +7,7 @@ import { parseEndpointPayload } from "./endpoint.js";
 import { formatMetric } from "./format.js";
 import { fetchGithubFollowers, hacktoberfestMessage, hacktoberfestPhase, isContributorListTooLarge, issueDetailState, parseDraftFilter, topLanguage } from "./github.js";
 import { fetchHomebrewVersion } from "./homebrew.js";
+import { fetchMavenVersion } from "./maven.js";
 import { licenseColor, npmLicenses } from "./npm.js";
 import { fetchRubyGemsVersion } from "./rubygems.js";
 import { parseWakatimeSvg } from "./wakatime.js";
@@ -158,6 +159,29 @@ test("dynamic json query joins matches", () => {
 test("dynamic json query refuses script expressions", () => {
   const doc = { items: [{ v: 1 }, { v: 2 }] };
   assert.throws(() => queryJson(doc, "$.items[?(@.v > 1)]"));
+});
+
+test("Maven Central artifact badge reads the public version metadata", async (t) => {
+  const mockedFetch = t.mock.method(globalThis, "fetch", async () =>
+    new Response("<metadata><versioning><release>3.17.0</release><latest>3.18.0-SNAPSHOT</latest></versioning></metadata>")
+  );
+  assert.deepEqual(await fetchMavenVersion("org.apache.commons", "commons-lang3"), {
+    label: "maven-central",
+    message: "v3.17.0",
+    color: "blue"
+  });
+  assert.equal(mockedFetch.mock.calls[0].arguments[0], "https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/maven-metadata.xml");
+});
+
+test("Maven Central badge falls back to latest when release is absent", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response("<metadata><versioning><latest>3.16.0</latest></versioning></metadata>"));
+  const badge = await fetchMavenVersion("org.apache.commons", "commons-lang3");
+  assert.equal(badge.message, "v3.16.0");
+});
+
+test("Maven Central artifact badge reports missing resources", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response(null, { status: 404 }));
+  await assert.rejects(fetchMavenVersion("org.apache.commons", "commons-lang3"), /artifact not found/);
 });
 
 test("issue/PR detail state mirrors Shields, including drafts", () => {
