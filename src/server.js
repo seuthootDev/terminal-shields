@@ -1,6 +1,7 @@
 import express from "express";
 
 import { inferTheme, toSvgColor } from "./colors.js";
+import { fetchCodecovCoverage } from "./codecov.js";
 import { fetchDockerImageSize, fetchDockerLastUpdated, fetchDockerPulls } from "./docker.js";
 import { fetchDynamicJsonBadge } from "./dynamic.js";
 import { fetchEndpointBadge } from "./endpoint.js";
@@ -338,6 +339,10 @@ app.get("/homebrew/v/:formula", async (req, res) => {
 
 app.get("/pypi/v/:pkg", async (req, res) => {
   await sendServiceBadge(req, res, () => fetchPypiVersion(req.params.pkg));
+});
+app.get("/codecov/c/github/:user/:repo", async (req, res) => {
+  const { user, repo } = req.params;
+  await sendServiceBadge(req, res, () => fetchCodecovCoverage(user, repo));
 });
 
 app.get("/gem/v/:gem", async (req, res) => {
