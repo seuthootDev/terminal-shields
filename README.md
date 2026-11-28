@@ -192,7 +192,7 @@ https://terminal-shields.vercel.app/endpoint?url=https://example.com/badge.json
 https://terminal-shields.vercel.app/badge/dynamic/json?url=https://example.com/data.json&query=$.version
 ```
 
-Append `?label=` to any live service badge to replace its label, for example `/github/stars/USER/REPO?label=likes`. An empty or missing value keeps the service's own label.
+Append `?label=` to any live service badge to replace its label, for example `/github/stars/USER/REPO?label=likes`. An empty or missing value keeps the service's own label. Append `?cacheSeconds=` to any live service badge to keep it cached longer, for example `/github/stars/USER/REPO?cacheSeconds=3600`. It can only raise the cache time above the 1800s default, up to one day (86400s); a smaller or invalid value is ignored.
 
 ```markdown
 ![stars](https://terminal-shields.vercel.app/github/stars/USER/REPO)

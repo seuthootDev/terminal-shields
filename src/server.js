@@ -67,6 +67,14 @@ function pickLabel(req, fallback) {
   return raw || fallback;
 }
 
+function pickCacheSeconds(req, fallback) {
+  const parsed = Number(String(req.query.cacheSeconds ?? "").trim());
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return fallback;
+  }
+  return Math.min(Math.max(Math.round(parsed), fallback), 86400);
+}
+
 async function sendBadge(res, { label, message, color, theme, bg, logo, blink = false, maxAge = 3600 }) {
   let logoPath = null;
   if (logo) {
@@ -113,7 +121,7 @@ async function sendServiceBadge(req, res, loader) {
       bg: pickBg(req),
       logo: pickLogo(req) ?? data.logo,
       blink: parseBlink(req.query),
-      maxAge: data.maxAge ?? 1800
+      maxAge: pickCacheSeconds(req, data.maxAge ?? 1800)
     });
   } catch (error) {
     sendError(res, String(error?.message ?? error));
